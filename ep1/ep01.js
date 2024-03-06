@@ -31,6 +31,13 @@ var gInterface = {
   inicio: 0,
 };
 
+var hora = {
+  todo: "0000",
+  mm: 0,
+  ss: 0,
+  ms: 0,
+};
+
 /* ==================================================================
     função main
 */
@@ -55,12 +62,21 @@ function construaInterface() {
   gInterface.start = document.getElementById('btStart');
   gInterface.reset = document.getElementById('btReset');
 
+  // numeric keypad
+  gInterface.nove = document.getElementById('bt9');
+  gInterface.oito = document.getElementById('bt8');
+
   // campos de texto
   gInterface.clock = document.getElementById('clock');
+  gInterface.clock2 = document.getElementById('secondary-clock');
 
   // registro das funções de callback
   gInterface.start.onclick = callbackStart;
   gInterface.reset.onclick = callbackReset;
+
+  // clicar botoes de numero
+  gInterface.nove.onclick = callbackNove;
+  gInterface.oito.onclick = callbackOito;
 }
 
 /**
@@ -86,7 +102,27 @@ function callbackReset(e) {
 
   if (v == "Start") {
     gInterface.inicio = Date.now();
-    gInterface.clock.innerHTML = "00 : 00 : 00"
+    gInterface.clock.innerHTML = "00 : 00 : 00";
+  }
+}
+
+function callbackOito(e) {
+  let v = gInterface.clock2.innerHTML;
+  if (v == "00:00") {
+    gInterface.clock2.innerHTML = "00 : 08";
+  }
+  else {
+    gInterface.clock2.innerHTML = somaRelogio('8');
+  }
+}
+
+function callbackNove(e) {
+  let v = gInterface.clock2.innerHTML;
+  if (v == "00:00") {
+    gInterface.clock2.innerHTML = "00 : 09";
+  }
+  else {
+    gInterface.clock2.innerHTML = somaRelogio('9');
   }
 }
 
@@ -117,4 +153,27 @@ function gereProximoQradro(e) {
  */
 function f2(x) {
   return ('00' + x).slice(-2);
+}
+
+/**
+ * 
+ * soma os valores ja existentes no relogio
+ * ao pressionar nova tecla
+ * 00 : 05 -> 00 : 52
+ */
+function somaRelogio(x) {
+  let v = gInterface.clock2.innerHTML;
+  let mm = hora.mm;
+  let ss = hora.ss;
+  let todo = hora.todo;
+
+  if (v == "00 : 00") {
+    gInterface.clock2.innerHTML = "00 : 0" + x;
+    todo.charAt(3) = x;
+  }
+  else {
+    hora.todo = todo + x;
+    gInterface.clock2.innerHTML = todo.charAt(0) + todo.charAt(1) + ":" + todo.charAt(2) + todo.charAt(3);
+
+  }
 }

@@ -13,34 +13,39 @@
 	<h2>Cronometro</h2>
 
 	<p>Essa aplicação apenas liga e desliga um relógio, como exemplo de ciclo de animação.</p>
-	<hr /> <!-- isso aqui coloca um divisor -->
   <center> <!-- centraliza o cronometro e botão -->
-    <h1 id="clock">00 : 00 : 00</h1>
+    <hr /> <!-- isso aqui coloca um divisor -->
 
+    <h2 id="secondary-clock">00:00</h2>
+    
     <hr />
     <div class="linha-tecla">
       <button class="tecla" type="button">1</button>
       <button class="tecla" type="button">2</button>
       <button class="tecla" type="button">3</button>
     </div>
-
+    
     <div class="linha-tecla">
       <button class="tecla" type="button">4</button>
       <button class="tecla" type="button">5</button>
       <button class="tecla" type="button">6</button>
     </div>
-
+    
     <div class="linha-tecla">
       <button class="tecla" type="button">7</button>
-      <button class="tecla" type="button">8</button>
-      <button class="tecla" type="button">9</button>
+      <input class="tecla" id="bt8" type="button" size="10" value="8">
+      <input class="tecla" id="bt9" type="button" size="10" value="9">
     </div>
-
+    
     <div class="linha-tecla">
       <input class='tecla' id="btStart" type="button" size="10" value="Start" />
       <button class="tecla" type="button">0</button>
-      <input class="tecla" id="btReset" type="button" size="10" value="C1" />
+      <input class="tecla" id="btReset" type="button" size="10" value="Cl" />
     </div>
+
+    <hr />
+    <h1 id="clock">00 : 00 : 00</h1>
+    <hr />
   </center>
 </body>
 
