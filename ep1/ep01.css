@@ -1,0 +1,16 @@
+body {
+  width: 250px;
+}
+
+.linha-tecla {
+  padding: 5px;
+}
+
+.tecla {
+  border: solid purple;
+  background-color: lightBlue;
+  height:50px;
+  width:50px;
+  cursor:pointer;
+  background-color: violet;
+}
