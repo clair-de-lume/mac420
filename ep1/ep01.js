@@ -77,7 +77,6 @@ function construaInterface() {
 /**
  * callbackStart
  */
-
 function callbackStart(e) {
   let v = gInterface.start.value;
   //console.log("cronometro 1:", gInterface.inicio);
@@ -86,8 +85,7 @@ function callbackStart(e) {
     console.log("Relógio está rodando ... ")
     gInterface.start.value = 'Stop';
     gInterface.inicio = Date.now() - gInterface.tempoPausado; 
-    let tempo = pegaTempo();
-    gInterface.fim = gInterface.inicio + tempo;
+    //gInterface.fim = gInterface.inicio + tempo;
   }
   else {
     console.log("Relógio foi parado.");
@@ -103,7 +101,7 @@ function callbackReset(e) {
   if (v == "Start") {
     //gInterface.inicio = Date.now();
     gInterface.clock.innerHTML = "00 : 00 : 00";
-    gInterface.clock2.innerHTML = "00:00"
+    gInterface.clock2.innerHTML = "00 : 00"
     gInterface.tempoPausado = 0;
   }
 }
@@ -133,45 +131,53 @@ function gereProximoQradro(e) {
     gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms)
   }
   
-  // pede para gerar o próximo quadro, eternamente...
-  if (checaTempo2()) {
+  if (!temposIguais()) {
+    //console.log("checou!")
+    // pede para gerar o próximo quadro, eternamente...
     window.requestAnimationFrame(gereProximoQradro);
   }
-}
-
-function checaTempo2() {
-  let u = gInterface.clock.innerHTML;
-  let v = gInterface.clock2.innerHTML;
-  v.append(":00");
-  
-  return (u != v);
 }
 
 /**
  * 
  * checa se o relogio principal já alcançou
  * o tempo solicitado
- */
-function checaTempo(mm, ss, ms) {
+*/
+function temposIguais() {
+  let u = gInterface.clock.innerHTML;
   let v = gInterface.clock2.innerHTML;
+  
+  // não para se não for inserido tempo no relogio secundario
+  if (v == "00 : 00") {
+    return false;
+  }
+  v = v + " : 00";
+  console.log(u === v)
+  
+  return (u == v);
+}
+
+
+/**
+ * 
+ * pega o tempo digitado no relogio secundario
+ * e retorna em milissegundos
+ */
+function pegaTempo() {
+  let v = gInterface.clock2.innerHTML;
+  let seg = v.slice(5,7);
   let min = v.slice(0,2);
-  let seg = v.slice(2,5);
-  console.log("min:", min);
 
   if (min.charAt(0) == '0') {
-    min = min.slice(0);
+    min = min.slice(5);
   }
-  if (seg.charAt(0) == '0') {
-    seg = seg.slice(0);
+  if(seg.charAt(5) == '0'){
+    seg = seg.slice(5);
   }
-  console.log("min:", min);
-
-  min = parseInt(min);
   seg = parseInt(seg);
-  console.log("mm : ss : ms: ", )
-  console.log("min:", min);
+  min = parseInt(min);
 
-  return (min == mm && seg == ss && ms == "00");
+  return (seg * 1000 + min * 60 * 1000);
 }
 
 /**
@@ -187,13 +193,15 @@ function f2(x) {
  * 
  * concatena o novo valor aos valores ja existentes 
  * no relogio ao pressionar nova tecla
+ * 0123456
+ * 00 : 00
  */
 function somaRelogio(x) {
   console.log("a tecla", x, "foi apertada!")
   let v = gInterface.clock2.innerHTML;
-  tempo = v.slice(0, 2) + v.slice(3,5);
+  tempo = v.slice(0, 2) + v.slice(5,7);
   tempo = tempo + x;
   result = tempo.slice(1, 5);
-  gInterface.clock2.innerHTML = result.slice(0, 2) + ":" + result.slice(2,4);
+  gInterface.clock2.innerHTML = result.slice(0, 2) + " : " + result.slice(2,4);
   console.log("display secundário", gInterface.clock2.innerHTML)
 }
