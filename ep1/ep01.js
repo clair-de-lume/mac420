@@ -30,7 +30,6 @@ const MSG = 'Exemplo de animação: cronômetro';
 var gInterface = {
   inicio: 0,
   tempoPausado: 0,
-  fim: 0,
 };
 
 /* ==================================================================
@@ -56,10 +55,19 @@ function construaInterface() {
   // botões
   gInterface.start = document.getElementById('btStart');
   gInterface.reset = document.getElementById('btReset');
+  gInterface.pause = document.getElementById('btPause');
 
   // numeric keypad
-  gInterface.nove = document.getElementById('bt9');
+  gInterface.zero = document.getElementById('bt0');
+  gInterface.um = document.getElementById('bt1');
+  gInterface.dois = document.getElementById('bt2');
+  gInterface.tres = document.getElementById('bt3');
+  gInterface.quatro = document.getElementById('bt4');
+  gInterface.cinco = document.getElementById('bt5');
+  gInterface.seis = document.getElementById('bt6');
+  gInterface.sete = document.getElementById('bt7');
   gInterface.oito = document.getElementById('bt8');
+  gInterface.nove = document.getElementById('bt9');
 
   // campos de texto
   gInterface.clock = document.getElementById('clock');
@@ -70,48 +78,106 @@ function construaInterface() {
   gInterface.reset.onclick = callbackReset;
   
   // clicar botoes de numero
-  gInterface.nove.onclick = callbackNove;
+  gInterface.zero.onclick = callbackZero;
+  gInterface.um.onclick = callbackUm;
+  gInterface.dois.onclick = callbackDois;
+  gInterface.tres.onclick = callbackTres;
+  gInterface.quatro.onclick = callbackQuatro;
+  gInterface.cinco.onclick = callbackCinco;
+  gInterface.seis.onclick = callbackSeis;
+  gInterface.sete.onclick = callbackSete;
   gInterface.oito.onclick = callbackOito;
+  gInterface.nove.onclick = callbackNove;
 }
 
 /**
  * callbackStart
  */
 function callbackStart(e) {
-  let v = gInterface.start.value;
-  //console.log("cronometro 1:", gInterface.inicio);
+  let v = gInterface.start.value;  
   
-  if (v == "Start") {
+  if (gInterface.clock2.innerHTML == "00 : 00"){
+    console.log("Nenhum tempo inserido!")
+  }
+  else if (v == "Start") {
+    normalizaTempo();
     console.log("Relógio está rodando ... ")
     gInterface.start.value = 'Stop';
-    gInterface.inicio = Date.now() - gInterface.tempoPausado; 
-    //gInterface.fim = gInterface.inicio + tempo;
+    gInterface.inicio = Date.now() - gInterface.tempoPausado;
   }
   else {
     console.log("Relógio foi parado.");
     gInterface.start.value = 'Start';
     gInterface.tempoPausado = Date.now() - gInterface.inicio;
-    //console.log("tempo pausado:", gInterface.tempoPausado)
   }
 }
 
 function callbackReset(e) {
-  let v = gInterface.start.value;
-
-  if (v == "Start") {
-    //gInterface.inicio = Date.now();
+  if (!desabilitado()) {
     gInterface.clock.innerHTML = "00 : 00 : 00";
     gInterface.clock2.innerHTML = "00 : 00"
     gInterface.tempoPausado = 0;
   }
 }
 
+function callbackZero(e) {
+  if (!desabilitado()) {
+    somaRelogio('0');
+  }
+}
+
+function callbackUm(e) {
+  if (!desabilitado()) {
+    somaRelogio('1');
+  }
+}
+
+function callbackDois(e) {
+  if (!desabilitado()) {
+    somaRelogio('2');
+  }
+}
+
+function callbackTres(e) {
+  if (!desabilitado()) {
+    somaRelogio('3');
+  }
+}
+
+function callbackQuatro(e) {
+  if (!desabilitado()) {
+    somaRelogio('4');
+  }
+}
+
+function callbackCinco(e) {
+  if (!desabilitado()) {
+    somaRelogio('5');
+  }
+}
+
+function callbackSeis(e) {
+  if (!desabilitado()) {
+    somaRelogio('6');
+  }
+}
+
+function callbackSete(e) {
+  if (!desabilitado()) {
+    somaRelogio('7');
+  }
+}
+
 function callbackOito(e) {
-  somaRelogio('8');
+  if (!desabilitado()) {
+    somaRelogio('8');
+  }
 }
 
 function callbackNove(e) {
-  somaRelogio('9');
+  if (!desabilitado()) {
+    somaRelogio('9');
+  }
 }
 
 /**
@@ -131,11 +197,23 @@ function gereProximoQradro(e) {
     gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms)
   }
   
+  if(v == 'Start') {
+    if(temposIguais()) {
+      
+    }
+  }
+
   if (!temposIguais()) {
-    //console.log("checou!")
     // pede para gerar o próximo quadro, eternamente...
     window.requestAnimationFrame(gereProximoQradro);
   }
+}
+
+function desabilitado() {
+  let v = gInterface.start.value;
+  let u = gInterface.pause.value;
+
+  return (v == "Stop" || u == "Run")
 }
 
 /**
@@ -152,8 +230,10 @@ function temposIguais() {
     return false;
   }
   v = v + " : 00";
-  console.log(u === v)
   
+  if (u == v) {
+    gInterface.start.value = "Start";
+  }
   return (u == v);
 }
 
@@ -178,6 +258,32 @@ function pegaTempo() {
   min = parseInt(min);
 
   return (seg * 1000 + min * 60 * 1000);
+}
+
+/**
+ * 
+ * seta o tempo no relogio secundario (minutos e/ou segundos)
+ * para 59 se um valor fora do intervalo [0, 59] for
+ * digitado
+*/
+function normalizaTempo() {
+  let v = gInterface.clock2.innerHTML;
+  let min = parseInt(v.slice(0,2));
+  let seg = parseInt(v.slice(5,7));
+
+  if (min <= 59 && seg <= 59) {
+    return;
+  }
+  if (min > 59 && seg > 59) {
+    gInterface.clock2.innerHTML = "59 : 59"
+  }
+  if (min > 59 && seg <= 59) {
+    gInterface.clock2.innerHTML = "59 : " + v.slice(5, 7);
+  }
+  if (seg > 59 && min <= 59) {
+    gInterface.clock2.innerHTML = v.slice(0, 2) + " : 59"
+  }
+
 }
 
 /**
