@@ -186,7 +186,7 @@ function callbackNove(e) {
 function gereProximoQradro(e) {
   let v = gInterface.start.value;
 
-  if (v == 'Stop') {
+  if (v == 'Stop' && !temposIguais()) {
     let now = Date.now();
     let dt = now - gInterface.inicio;
 
@@ -196,17 +196,9 @@ function gereProximoQradro(e) {
     let ss = dt - mm * 60;
     gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms)
   }
-  
-  if(v == 'Start') {
-    if(temposIguais()) {
-      
-    }
-  }
 
-  if (!temposIguais()) {
-    // pede para gerar o próximo quadro, eternamente...
-    window.requestAnimationFrame(gereProximoQradro);
-  }
+// pede para gerar o próximo quadro, eternamente...
+  window.requestAnimationFrame(gereProximoQradro);
 }
 
 function desabilitado() {
@@ -235,29 +227,6 @@ function temposIguais() {
     gInterface.start.value = "Start";
   }
   return (u == v);
-}
-
-
-/**
- * 
- * pega o tempo digitado no relogio secundario
- * e retorna em milissegundos
- */
-function pegaTempo() {
-  let v = gInterface.clock2.innerHTML;
-  let seg = v.slice(5,7);
-  let min = v.slice(0,2);
-
-  if (min.charAt(0) == '0') {
-    min = min.slice(5);
-  }
-  if(seg.charAt(5) == '0'){
-    seg = seg.slice(5);
-  }
-  seg = parseInt(seg);
-  min = parseInt(min);
-
-  return (seg * 1000 + min * 60 * 1000);
 }
 
 /**
