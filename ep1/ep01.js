@@ -186,7 +186,7 @@ function callbackNove(e) {
 function gereProximoQradro(e) {
   let v = gInterface.start.value;
 
-  if (v == 'Stop') {
+  if (v == 'Stop' && !temposIguais()) {
     let now = Date.now();
     let dt = now - gInterface.inicio;
 
@@ -196,17 +196,9 @@ function gereProximoQradro(e) {
     let ss = dt - mm * 60;
     gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms)
   }
-  
-  if(v == 'Start') {
-    if(temposIguais()) {
-      
-    }
-  }
 
-  if (!temposIguais()) {
-    // pede para gerar o próximo quadro, eternamente...
-    window.requestAnimationFrame(gereProximoQradro);
-  }
+    // pede para gerar o próximo quadro, eternamente...   window.requestAnimationFrame(gereProximoQradro);
+  
 }
 
 function desabilitado() {
