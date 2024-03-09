@@ -56,6 +56,7 @@ function construaInterface() {
   gInterface.start = document.getElementById('btStart');
   gInterface.reset = document.getElementById('btReset');
   gInterface.pause = document.getElementById('btPause');
+  gInterface.modo = document.getElementById('btModo');
 
   // numeric keypad
   gInterface.zero = document.getElementById('bt0');
@@ -69,114 +70,124 @@ function construaInterface() {
   gInterface.oito = document.getElementById('bt8');
   gInterface.nove = document.getElementById('bt9');
 
-  // campos de texto
+  // relogios
   gInterface.clock = document.getElementById('clock');
   gInterface.clock2 = document.getElementById('secondary-clock');
 
   // registro das funções de callback
   gInterface.start.onclick = callbackStart;
   gInterface.reset.onclick = callbackReset;
+  gInterface.pause.onclick = callbackPause;
+  gInterface.modo.onclick = callbackModo;
   
-  // clicar botoes de numero
-  gInterface.zero.onclick = callbackZero;
-  gInterface.um.onclick = callbackUm;
-  gInterface.dois.onclick = callbackDois;
-  gInterface.tres.onclick = callbackTres;
-  gInterface.quatro.onclick = callbackQuatro;
-  gInterface.cinco.onclick = callbackCinco;
-  gInterface.seis.onclick = callbackSeis;
-  gInterface.sete.onclick = callbackSete;
-  gInterface.oito.onclick = callbackOito;
-  gInterface.nove.onclick = callbackNove;
+  gInterface.zero.onclick = callbackTecla;
+  gInterface.um.onclick = callbackTecla;
+  gInterface.dois.onclick = callbackTecla;
+  gInterface.tres.onclick = callbackTecla;
+  gInterface.quatro.onclick = callbackTecla;
+  gInterface.cinco.onclick = callbackTecla;
+  gInterface.seis.onclick = callbackTecla;
+  gInterface.sete.onclick = callbackTecla;
+  gInterface.oito.onclick = callbackTecla;
+  gInterface.nove.onclick = callbackTecla;
 }
 
 /**
  * callbackStart
  */
 function callbackStart(e) {
-  let v = gInterface.start.value;  
-  
+  let v = gInterface.start.value;
+  let u = gInterface.pause.value;
+  let m = gInterface.modo.value;
+
   if (gInterface.clock2.innerHTML == "00 : 00"){
     console.log("Nenhum tempo inserido!")
   }
-  else if (v == "Start") {
-    normalizaTempo();
-    console.log("Relógio está rodando ... ")
-    gInterface.start.value = 'Stop';
-    gInterface.inicio = Date.now() - gInterface.tempoPausado;
+  if (m == "Crono") {
+    if (v == "Start") {
+      normalizaTempo();
+      console.log("Relógio está rodando ... ")
+      gInterface.start.value = 'Stop';
+      gInterface.inicio = Date.now();
+      //gInterface.inicio = Date.now() - gInterface.tempoPausado;
+    }
+    else { // v == Stop
+      if (u != "Run") {
+        console.log("Relógio foi parado.");
+        gInterface.start.value = 'Start';
+        //gInterface.tempoPausado = Date.now() - gInterface.inicio;
+      }
+    }
   }
   else {
-    console.log("Relógio foi parado.");
-    gInterface.start.value = 'Start';
-    gInterface.tempoPausado = Date.now() - gInterface.inicio;
+    if (v == "Start") {
+      normalizaTempo();
+      console.log("Relógio está rodando ... ")
+      gInterface.start.value = 'Stop';
+      gInterface.inicio = Date.now() + transformaTempo();
+      //gInterface.inicio = Date.now() - gInterface.tempoPausado;
+    }
+    else {
+      if (u != "Run") {
+        console.log("Relógio foi parado.");
+        gInterface.start.value = 'Start';
+        //gInterface.tempoPausado = Date.now() - gInterface.inicio;
+      }
+    }
   }
 }
 
 function callbackReset(e) {
   if (!desabilitado()) {
-    gInterface.clock.innerHTML = "00 : 00 : 00";
+    console.log("CL: cl 0");
+    //gInterface.clock.innerHTML = "00 : 00 : 00";
     gInterface.clock2.innerHTML = "00 : 00"
     gInterface.tempoPausado = 0;
   }
 }
 
-function callbackZero(e) {
-  if (!desabilitado()) {
-    somaRelogio('0');
+function callbackPause(e) {
+  let v = gInterface.start.value;
+  let u = gInterface.pause.value;
+
+  if (v != "Start") {
+    if (u == "Pause") {
+      console.log("pausado")
+      gInterface.pause.value = "Run";
+      gInterface.inicio = Date.now() - gInterface.tempoPausado;
+    } 
+    else {
+      console.log("rodando")
+      gInterface.pause.value = "Pause"
+      gInterface.tempoPausado = Date.now() - gInterface.inicio;
+    }
+  }
+  else {
+    console.log("tecla desabilitada");  
   }
 }
 
-function callbackUm(e) {
-  if (!desabilitado()) {
-    somaRelogio('1');
+function callbackModo(e) {
+  let a = gInterface.modo.value;
+
+  if (a == "Crono") {
+    console.log("Modo: Cronômetro");
+    gInterface.modo.value = "Timer";
+  }
+
+  else {
+    console.log("Modo: Timer");
+    gInterface.modo.value = "Crono"
   }
 }
 
-function callbackDois(e) {
+function callbackTecla(e) {
+  let valor = e.target.value;
   if (!desabilitado()) {
-    somaRelogio('2');
+    somaRelogio(valor);
   }
-}
-
-function callbackTres(e) {
-  if (!desabilitado()) {
-    somaRelogio('3');
-  }
-}
-
-function callbackQuatro(e) {
-  if (!desabilitado()) {
-    somaRelogio('4');
-  }
-}
-
-function callbackCinco(e) {
-  if (!desabilitado()) {
-    somaRelogio('5');
-  }
-}
-
-function callbackSeis(e) {
-  if (!desabilitado()) {
-    somaRelogio('6');
-  }
-}
-
-function callbackSete(e) {
-  if (!desabilitado()) {
-    somaRelogio('7');
-  }
-}
-
-function callbackOito(e) {
-  if (!desabilitado()) {
-    somaRelogio('8');
-  }
-}
-
-function callbackNove(e) {
-  if (!desabilitado()) {
-    somaRelogio('9');
+  else {
+    console.log("Tecla desabilitada.")
   }
 }
 
@@ -185,20 +196,37 @@ function callbackNove(e) {
  */
 function gereProximoQradro(e) {
   let v = gInterface.start.value;
+  let u = gInterface.pause.value;
+  let m = gInterface.modo.value;
 
-  if (v == 'Stop' && !temposIguais()) {
-    let now = Date.now();
-    let dt = now - gInterface.inicio;
-
-    let ms = Math.floor(dt / 10) % 100;
-    dt = Math.floor(dt / 1000);
-    let mm = Math.floor(dt / 60);
-    let ss = dt - mm * 60;
-    gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms)
+  if (m == "Crono") {
+    // condicoes para animacao: nao deu stop, nao chegou no tempo e nao pausado
+    if (v == 'Stop' && !pausado() && !temposIguais()) {
+      let now = Date.now();
+      let dt = now - gInterface.inicio;
+  
+      let ms = Math.floor(dt / 10) % 100;
+      dt = Math.floor(dt / 1000);
+      let mm = Math.floor(dt / 60);
+      let ss = dt - mm * 60;
+      gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
+    }
+  }
+  else {
+    if (v == 'Stop' && !pausado() && !terminou()) {
+      let now = Date.now();
+      let dt = gInterface.inicio - now;
+  
+      let ms = Math.floor(dt / 10) % 100;
+      dt = Math.floor(dt / 1000);
+      let mm = Math.floor(dt / 60);
+      let ss = dt - mm * 60;
+      gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
+    }
   }
 
-    // pede para gerar o próximo quadro, eternamente...   window.requestAnimationFrame(gereProximoQradro);
-  
+  // pede para gerar o próximo quadro, eternamente...   
+  window.requestAnimationFrame(gereProximoQradro);
 }
 
 function desabilitado() {
@@ -206,6 +234,18 @@ function desabilitado() {
   let u = gInterface.pause.value;
 
   return (v == "Stop" || u == "Run")
+}
+
+/**
+ * 
+ * checa se o cronometro começou a contar, mas
+ * foi pausado com a tecla Pause
+*/
+function pausado() {
+  let v = gInterface.start.value;
+  let u = gInterface.pause.value;
+
+  return (v == 'Stop' && u == 'Run')
 }
 
 /**
@@ -229,27 +269,22 @@ function temposIguais() {
   return (u == v);
 }
 
-
-/**
- * 
- * pega o tempo digitado no relogio secundario
- * e retorna em milissegundos
- */
-function pegaTempo() {
+function terminou() {
+  let u = gInterface.clock.innerHTML;
   let v = gInterface.clock2.innerHTML;
-  let seg = v.slice(5,7);
-  let min = v.slice(0,2);
 
-  if (min.charAt(0) == '0') {
-    min = min.slice(5);
+  if (v == "00 : 00") {
+    return false;
   }
-  if(seg.charAt(5) == '0'){
-    seg = seg.slice(5);
-  }
-  seg = parseInt(seg);
-  min = parseInt(min);
 
-  return (seg * 1000 + min * 60 * 1000);
+  v = v + " : 00";
+  
+  if (u == v) {
+    console.log("passou aqui");
+    gInterface.start.value = "Start";
+    gInterface.clock.innerHTML = "00 : 00 : 00";
+  } 
+  return (u == v);
 }
 
 /**
@@ -295,11 +330,19 @@ function f2(x) {
  * 00 : 00
  */
 function somaRelogio(x) {
-  console.log("a tecla", x, "foi apertada!")
   let v = gInterface.clock2.innerHTML;
   tempo = v.slice(0, 2) + v.slice(5,7);
   tempo = tempo + x;
   result = tempo.slice(1, 5);
   gInterface.clock2.innerHTML = result.slice(0, 2) + " : " + result.slice(2,4);
-  console.log("display secundário", gInterface.clock2.innerHTML)
+  console.log("Botão:", x, result.slice(0,2)+result.slice(2,4))
+}
+
+function transformaTempo() {
+  let v = gInterface.clock2.innerHTML;
+  let min = parseInt(v.slice(0, 2));
+  let seg = parseInt(v.slice(5, 7));
+
+  return (min * 60 * 1000 + seg * 1000);
+
 }
