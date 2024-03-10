@@ -30,6 +30,7 @@ const MSG = 'Exemplo de animação: cronômetro';
 var gInterface = {
   inicio: 0,
   tempoPausado: 0,
+  diferenca: 0,
 };
 
 /* ==================================================================
@@ -103,19 +104,20 @@ function callbackStart(e) {
   if (gInterface.clock2.innerHTML == "00 : 00"){
     console.log("Nenhum tempo inserido!")
   }
-  if (m == "Crono") {
+
+  else if (m == "Crono") {
     if (v == "Start") {
       normalizaTempo();
       console.log("Relógio está rodando ... ")
       gInterface.start.value = 'Stop';
+      gInterface.diferenca = transformaTempo();
+      //console.log(gInterface.diferenca)
       gInterface.inicio = Date.now();
-      //gInterface.inicio = Date.now() - gInterface.tempoPausado;
     }
-    else { // v == Stop
+    else {
       if (u != "Run") {
         console.log("Relógio foi parado.");
         gInterface.start.value = 'Start';
-        //gInterface.tempoPausado = Date.now() - gInterface.inicio;
       }
     }
   }
@@ -124,14 +126,13 @@ function callbackStart(e) {
       normalizaTempo();
       console.log("Relógio está rodando ... ")
       gInterface.start.value = 'Stop';
-      gInterface.inicio = Date.now() + transformaTempo();
-      //gInterface.inicio = Date.now() - gInterface.tempoPausado;
+      let now = Date.now();
+      gInterface.inicio = now + transformaTempo();
     }
     else {
       if (u != "Run") {
         console.log("Relógio foi parado.");
         gInterface.start.value = 'Start';
-        //gInterface.tempoPausado = Date.now() - gInterface.inicio;
       }
     }
   }
@@ -140,7 +141,6 @@ function callbackStart(e) {
 function callbackReset(e) {
   if (!desabilitado()) {
     console.log("CL: cl 0");
-    //gInterface.clock.innerHTML = "00 : 00 : 00";
     gInterface.clock2.innerHTML = "00 : 00"
     gInterface.tempoPausado = 0;
   }
@@ -149,17 +149,32 @@ function callbackReset(e) {
 function callbackPause(e) {
   let v = gInterface.start.value;
   let u = gInterface.pause.value;
+  let w = gInterface.modo.value;
 
   if (v != "Start") {
-    if (u == "Pause") {
-      console.log("pausado")
-      gInterface.pause.value = "Run";
-      gInterface.inicio = Date.now() - gInterface.tempoPausado;
-    } 
+    if (w == "Crono") {
+      if (u == "Pause") {
+        console.log("pausado")
+        gInterface.pause.value = "Run";
+        gInterface.inicio = Date.now() - gInterface.tempoPausado;
+      } 
+      else {
+        console.log("rodando")
+        gInterface.pause.value = "Pause";
+        gInterface.tempoPausado = Date.now() - gInterface.inicio;
+      }
+    }
     else {
-      console.log("rodando")
-      gInterface.pause.value = "Pause"
-      gInterface.tempoPausado = Date.now() - gInterface.inicio;
+      if (u == "Pause") {
+        console.log("pausado")
+        gInterface.pause.value = "Run";
+        gInterface.tempoPausado = Date.now();
+      } 
+      else {
+        console.log("rodando")
+        gInterface.pause.value = "Pause";
+        gInterface.inicio += Date.now() - gInterface.tempoPausado;
+      }
     }
   }
   else {
@@ -170,14 +185,19 @@ function callbackPause(e) {
 function callbackModo(e) {
   let a = gInterface.modo.value;
 
-  if (a == "Crono") {
-    console.log("Modo: Cronômetro");
-    gInterface.modo.value = "Timer";
+  if (!desabilitado()) {
+    if (a == "Crono") {
+      console.log("Modo: Timer");
+      gInterface.modo.value = "Timer";
+    }
+  
+    else {
+      console.log("Modo: Cronômetro");
+      gInterface.modo.value = "Crono"
+    }
   }
-
   else {
-    console.log("Modo: Timer");
-    gInterface.modo.value = "Crono"
+    console.log ('tecla desabilitada');
   }
 }
 
@@ -187,7 +207,7 @@ function callbackTecla(e) {
     somaRelogio(valor);
   }
   else {
-    console.log("Tecla desabilitada.")
+    console.log("Tecla desabilitada.");
   }
 }
 
@@ -198,37 +218,54 @@ function gereProximoQradro(e) {
   let v = gInterface.start.value;
   let u = gInterface.pause.value;
   let m = gInterface.modo.value;
+  let w = gInterface.diferenca;
 
   if (m == "Crono") {
     // condicoes para animacao: nao deu stop, nao chegou no tempo e nao pausado
-    if (v == 'Stop' && !pausado() && !temposIguais()) {
+    if (v == 'Stop' && !pausado()) {
       let now = Date.now();
       let dt = now - gInterface.inicio;
+      //console.log(dt)
   
-      let ms = Math.floor(dt / 10) % 100;
-      dt = Math.floor(dt / 1000);
-      let mm = Math.floor(dt / 60);
-      let ss = dt - mm * 60;
-      gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
-    }
+      if (dt <= w) {
+        let ms = Math.floor(dt / 10) % 100;
+        dt = Math.floor(dt / 1000);
+        let mm = Math.floor(dt / 60);
+        let ss = dt - mm * 60;
+        gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
+      }
+      else {
+        gInterface.clock.innerHTML = gInterface.clock2.innerHTML + " : 00"; // sem essa linha, o relogio para em XX : XX : 99 sempre
+        gInterface.start.value = "Start";
+      }
+    }  
   }
   else {
-    if (v == 'Stop' && !pausado() && !terminou()) {
+    if (v == 'Stop' && !pausado()) {
       let now = Date.now();
       let dt = gInterface.inicio - now;
   
-      let ms = Math.floor(dt / 10) % 100;
-      dt = Math.floor(dt / 1000);
-      let mm = Math.floor(dt / 60);
-      let ss = dt - mm * 60;
-      gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
+      if (dt >= 0) {
+        let ms = Math.floor(dt / 10) % 100;
+        dt = Math.floor(dt / 1000);
+        let mm = Math.floor(dt / 60);
+        let ss = dt - mm * 60;
+        gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
+      }
+      else {
+        gInterface.start.value = "Start";
+        gInterface.clock.innerHTML = gInterface.clock2.innerHTML + " : 00";
+      }
     }
   }
-
   // pede para gerar o próximo quadro, eternamente...   
   window.requestAnimationFrame(gereProximoQradro);
 }
 
+/**
+ * 
+ * checa se o relogio está contando ou está pausado
+*/
 function desabilitado() {
   let v = gInterface.start.value;
   let u = gInterface.pause.value;
@@ -264,26 +301,9 @@ function temposIguais() {
   v = v + " : 00";
   
   if (u == v) {
-    gInterface.start.value = "Start";
-  }
-  return (u == v);
-}
-
-function terminou() {
-  let u = gInterface.clock.innerHTML;
-  let v = gInterface.clock2.innerHTML;
-
-  if (v == "00 : 00") {
-    return false;
-  }
-
-  v = v + " : 00";
-  
-  if (u == v) {
     console.log("passou aqui");
     gInterface.start.value = "Start";
-    gInterface.clock.innerHTML = "00 : 00 : 00";
-  } 
+  }
   return (u == v);
 }
 
@@ -338,6 +358,11 @@ function somaRelogio(x) {
   console.log("Botão:", x, result.slice(0,2)+result.slice(2,4))
 }
 
+/**
+ * 
+ * transforma tempo inserido no relogio secundario
+ * em tempo em milissegundos
+ */
 function transformaTempo() {
   let v = gInterface.clock2.innerHTML;
   let min = parseInt(v.slice(0, 2));
