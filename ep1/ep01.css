@@ -2,15 +2,50 @@ body {
   width: 250px;
 }
 
+.keypad {
+  background-color: rgb(205, 152, 218);
+  padding: 7px;
+  border-radius: 15px;;
+}
+
+.texto {
+  color: rgb(143, 25, 143);
+  padding: 1px;
+}
+
 .linha-tecla {
   padding: 5px;
 }
 
-.tecla {
-  border: solid purple;
-  background-color: lightBlue;
+.teclas-numericas {
+  border: solid rgb(167, 70, 167);
+  border-radius: 50%;
   height:50px;
   width:50px;
   cursor:pointer;
-  background-color: violet;
+  background-color: rgb(235, 186, 235);
+}
+
+.tecla-invisivel {
+  color: rgb(205, 152, 218);
+  border: 0;
+  height: 50px;
+  width: 50px;
+  background-color: rgb(205, 152, 218);
+}
+
+.teclas-controle {
+  border: solid rgb(167, 70, 167);
+  border-radius: 15px;
+  height:45px;
+  width:60px;
+  cursor:pointer;
+  background-color: rgb(235, 186, 235);
+}
+
+.relogio {
+  color: rgb(143, 25, 143);
+  border: solid rgb(167, 70, 167);
+  border-radius: 10px;
+  padding: 1px
 }
