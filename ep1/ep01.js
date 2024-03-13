@@ -1,3 +1,37 @@
+/* ==================================================
+        cronometro.js
+
+        Nome: Luísa Menezes da Costa
+        NUSP: 12676491
+
+        Ao preencher esse cabeçalho com o meu nome e o meu número USP,
+        declaro que todas as partes originais desse exercício programa (EP)
+        foram desenvolvidas e implementadas por mim e que portanto não 
+        constituem desonestidade acadêmica ou plágio.
+        Declaro também que sou responsável por todas as cópias desse
+        programa e que não distribui ou facilitei a sua distribuição.
+        Estou ciente que os casos de plágio e desonestidade acadêmica
+        serão tratados segundo os critérios divulgados na página da 
+        disciplina.
+        Entendo que EPs sem assinatura devem receber nota zero e, ainda
+        assim, poderão ser punidos por desonestidade acadêmica.
+
+        Abaixo descreva qualquer ajuda que você recebeu para fazer este
+        EP.  Inclua qualquer ajuda recebida por pessoas (inclusive
+        monitores e colegas). Com exceção de material da disciplina, caso
+        você tenha utilizado alguma informação, trecho de código,...
+        indique esse fato abaixo para que o seu programa não seja
+        considerado plágio ou irregular.
+
+        Exemplo:
+
+            A minha função quicksort() foi baseada na descrição encontrada na 
+            página https://www.ime.usp.br/~pf/algoritmos/aulas/quick.html.
+
+        Descrição de ajuda ou indicação de fonte:
+        - site MDN Web Docs para sanar dúvidas de JS/CSS/HTML (https://developer.mozilla.org/pt-BR/)
+    ================================================== */
+
 /* =====================================================
     lab01 - cronômetro
 
@@ -77,8 +111,8 @@ function construaInterface() {
 
   // registro das funções de callback
   gInterface.start.onclick = callbackStart;
-  gInterface.reset.onclick = callbackReset;
   gInterface.pause.onclick = callbackPause;
+  gInterface.reset.onclick = callbackReset;
   gInterface.modo.onclick = callbackModo;
   
   gInterface.zero.onclick = callbackTecla;
@@ -111,13 +145,16 @@ function callbackStart(e) {
       console.log("Relógio está rodando ... ")
       gInterface.start.value = 'Stop';
       gInterface.diferenca = transformaTempo();
-      //console.log(gInterface.diferenca)
-      gInterface.inicio = Date.now();
+      let now = Date.now();
+      gInterface.inicio = now;
     }
     else {
       if (u != "Run") {
         console.log("Relógio foi parado.");
         gInterface.start.value = 'Start';
+      }
+      else {
+        console.log("tecla desabilitada");
       }
     }
   }
@@ -134,6 +171,9 @@ function callbackStart(e) {
         console.log("Relógio foi parado.");
         gInterface.start.value = 'Start';
       }
+      else {
+        console.log("tecla desabilitada");
+      }
     }
   }
 }
@@ -141,40 +181,24 @@ function callbackStart(e) {
 function callbackReset(e) {
   if (!desabilitado()) {
     console.log("CL: cl 0");
-    gInterface.clock2.innerHTML = "00 : 00"
-    gInterface.tempoPausado = 0;
+    gInterface.clock2.innerHTML = "00 : 00";
   }
 }
 
 function callbackPause(e) {
   let v = gInterface.start.value;
   let u = gInterface.pause.value;
-  let w = gInterface.modo.value;
 
-  if (v != "Start") {
-    if (w == "Crono") {
-      if (u == "Pause") {
-        console.log("pausado")
-        gInterface.pause.value = "Run";
-        gInterface.inicio = Date.now() - gInterface.tempoPausado;
-      } 
-      else {
-        console.log("rodando")
-        gInterface.pause.value = "Pause";
-        gInterface.tempoPausado = Date.now() - gInterface.inicio;
-      }
-    }
+  if (v == "Stop") {
+    if (u == "Pause") {
+      console.log("pausado");
+      gInterface.pause.value = "Run";
+      gInterface.tempoPausado = Date.now();
+    } 
     else {
-      if (u == "Pause") {
-        console.log("pausado")
-        gInterface.pause.value = "Run";
-        gInterface.tempoPausado = Date.now();
-      } 
-      else {
-        console.log("rodando")
-        gInterface.pause.value = "Pause";
-        gInterface.inicio += Date.now() - gInterface.tempoPausado;
-      }
+      console.log("rodando");
+      gInterface.pause.value = "Pause";
+      gInterface.inicio += Date.now() - gInterface.tempoPausado;
     }
   }
   else {
@@ -187,12 +211,12 @@ function callbackModo(e) {
 
   if (!desabilitado()) {
     if (a == "Crono") {
-      console.log("Modo: Timer");
+      console.log("Modo Timer habilitado");
       gInterface.modo.value = "Timer";
     }
   
     else {
-      console.log("Modo: Cronômetro");
+      console.log("Modo Cronômetro habilitado");
       gInterface.modo.value = "Crono"
     }
   }
@@ -207,7 +231,7 @@ function callbackTecla(e) {
     somaRelogio(valor);
   }
   else {
-    console.log("Tecla desabilitada.");
+    console.log("tecla desabilitada");
   }
 }
 
@@ -225,7 +249,6 @@ function gereProximoQradro(e) {
     if (v == 'Stop' && !pausado()) {
       let now = Date.now();
       let dt = now - gInterface.inicio;
-      //console.log(dt)
   
       if (dt <= w) {
         let ms = Math.floor(dt / 10) % 100;
@@ -235,8 +258,8 @@ function gereProximoQradro(e) {
         gInterface.clock.innerHTML = f2(mm) + ' : ' + f2(ss) + ' : ' + f2(ms);
       }
       else {
-        gInterface.clock.innerHTML = gInterface.clock2.innerHTML + " : 00"; // sem essa linha, o relogio para em XX : XX : 99 sempre
         gInterface.start.value = "Start";
+        gInterface.clock.innerHTML = gInterface.clock2.innerHTML + " : 00"; // sem essa linha, o relogio para em XX : XX : 99 sempre
       }
     }  
   }
@@ -287,28 +310,6 @@ function pausado() {
 
 /**
  * 
- * checa se o relogio principal já alcançou
- * o tempo solicitado
-*/
-function temposIguais() {
-  let u = gInterface.clock.innerHTML;
-  let v = gInterface.clock2.innerHTML;
-  
-  // não para se não for inserido tempo no relogio secundario
-  if (v == "00 : 00") {
-    return false;
-  }
-  v = v + " : 00";
-  
-  if (u == v) {
-    console.log("passou aqui");
-    gInterface.start.value = "Start";
-  }
-  return (u == v);
-}
-
-/**
- * 
  * seta o tempo no relogio secundario (minutos e/ou segundos)
  * para 59 se um valor fora do intervalo [0, 59] for
  * digitado
@@ -330,7 +331,6 @@ function normalizaTempo() {
   if (seg > 59 && min <= 59) {
     gInterface.clock2.innerHTML = v.slice(0, 2) + " : 59"
   }
-
 }
 
 /**
