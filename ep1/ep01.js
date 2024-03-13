@@ -1,8 +1,9 @@
 /* ==================================================
         cronometro.js
-
-        Nome: 
-        NUSP:
+        
+        Nome: Luísa Menezes da Costa
+        NUSP: 12676491
+>>>>>>> 34ceec8d299225a090e3ba565d659f8a84dd44ef
 
         Ao preencher esse cabeçalho com o meu nome e o meu número USP,
         declaro que todas as partes originais desse exercício programa (EP)
