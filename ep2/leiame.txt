@@ -5,7 +5,9 @@ Um parágrafo descrevendo o jogo.
 
 Horas de trabalho: 
 Horas dedicadas (aproximadamente) por semana e total
-Semana 1 (11/03 - 17/03): 1 hora
+Semana 1 (11/03 - 17/03): 2.5 horas
+Semana 2 (18/03 - 24/03):
+Semana 3 (25/03 - 31/03):
 
 Dificuldades: 
 Uma seção (alguns parágrafos) descrevendo as dificuldades encontradas ao longo do exercício.
