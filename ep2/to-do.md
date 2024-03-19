@@ -16,3 +16,6 @@
 
 # Brainstorming
 
+# Detalhes
+- os raios dos peixes devem variar de 10 até 50
+
