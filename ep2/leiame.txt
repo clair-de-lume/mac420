@@ -12,6 +12,8 @@ Semana 3 (25/03 - 31/03):
 Dificuldades: 
 Uma seção (alguns parágrafos) descrevendo as dificuldades encontradas ao longo do exercício.
 
+- levei muito tempo para entender a questão de área normalizada
+
 Bugs: 
 Descreva o que não foi concluído e bugs conhecidos.
 
