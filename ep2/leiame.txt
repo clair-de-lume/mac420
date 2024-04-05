@@ -1,21 +1,28 @@
 Breve descrição do seu projeto e desenvolvimento
 
 Introdução: 
-Um parágrafo descrevendo o jogo.
+Pescaria é um jogo simplificando feito em JavaScript e utilizando o recurso "Canva". Ele conta com dois
+botões, Jogar e Passo, e uma barra para determinar a velocidade do jogo. Inicialmente, o jogo inicia
+pausado e o jogador deve clicar em Jogar. Ao clicar nesse botão, os peixes (já criados) começam a se mover
+com direções e velocidades aleatórias. O objetivo do jogo é acertar os peixes com o arpão, controlado pelas
+teclas A (mover para esquerda), S (atirar bolha) e D (mover para direita). O botão Passo só funciona quando 
+o jogo está pausado, e a cada vez que é clicado, os peixes se movem um frame apenas.
 
 Horas de trabalho: 
-Horas dedicadas (aproximadamente) por semana e total
 Semana 1 (11/03 - 17/03): 2.5 horas
-Semana 2 (18/03 - 24/03):
-Semana 3 (25/03 - 31/03):
+Semana 2 (18/03 - 24/03): 3 horas
+Semana 3 (25/03 - 31/03): 0 horas
+Semana 4: (01/04 - 06/04): 4 horas
 
 Dificuldades: 
 Uma seção (alguns parágrafos) descrevendo as dificuldades encontradas ao longo do exercício.
 
-- levei muito tempo para entender a questão de área normalizada
+Levei muito tempo para entender a questão de área normalizada.
 
 Bugs: 
 Descreva o que não foi concluído e bugs conhecidos.
 
 Opcionais: 
-Descreva coisas a mais que você fez para deixar o jogo mais “interessante” e/ou completo. Veja algumas sugestões no final desse documento.
+Descreva coisas a mais que você fez para deixar o jogo mais “interessante” e/ou completo. Veja algumas sugestões no final desse documento. 
+
+Ao lado do range de velocidade, coloquei um texto indicando por quantas vezes a velocidade foi aumentada ou diminuída, indo de 0.5 até 1.5.
