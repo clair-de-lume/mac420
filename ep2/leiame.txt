@@ -12,17 +12,27 @@ Horas de trabalho:
 Semana 1 (11/03 - 17/03): 2.5 horas
 Semana 2 (18/03 - 24/03): 3 horas
 Semana 3 (25/03 - 31/03): 0 horas
-Semana 4: (01/04 - 06/04): 4 horas
+Semana 4: (01/04 - 06/04): 6 horas
+
+Total: ~ 12 horas
 
 Dificuldades: 
 Uma seção (alguns parágrafos) descrevendo as dificuldades encontradas ao longo do exercício.
 
-Levei muito tempo para entender a questão de área normalizada.
+Uma das dificuldades no início do EP foi entender como usar as funções built-in de JavaScript para pegar o máximo da tela e ajustar
+esse máximo de modo a encaixar a areia. Além disso, tive uma breve dificuldade com o movimento dos peixes, pois minha função nVertices
+da classe Peixe calculava os novos vértice e dava push sem limpar a pilha, fazendo com que os peixes fossem pintados como um poligono
+cada vez maior que gradativamente ocupava toda a tela.
 
 Bugs: 
 Descreva o que não foi concluído e bugs conhecidos.
 
+No EP, não foi implementado a área normalizada do Canvas nem o movimento do arpão utilizando o mouse. Por isso, ao dar resize na janela,
+os elementos são printados novamente, porém os peixes não refletem mais nas bordas atuais, refletindo um pouco antes, se a janela for
+aumentada e um pouco depois, se a janela for reduzida.
+
 Opcionais: 
 Descreva coisas a mais que você fez para deixar o jogo mais “interessante” e/ou completo. Veja algumas sugestões no final desse documento. 
 
-Ao lado do range de velocidade, coloquei um texto indicando por quantas vezes a velocidade foi aumentada ou diminuída, indo de 0.5 até 1.5.
+Ao lado do range de velocidade, coloquei um texto indicando por quantas vezes a velocidade foi aumentada ou diminuída, 
+indo de 0.5 até 1.5. Além disso, ao atingir todos os peixes, uma breve mensagem de fim de jogo é impressa na tela.

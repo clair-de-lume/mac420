@@ -217,6 +217,16 @@ class Bolha extends Poligono {
     função main
 */
 function main() {
+  construaInterface();
+
+  desenha();
+}
+
+/**
+ * Constroi o Canvas e define seus elementos da interface
+ * direto do HTML e suas respectivas funcoes associadas.
+ */
+function construaInterface() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   
@@ -238,16 +248,23 @@ function main() {
   gInterface.start.onclick = callbackJogar;
   gInterface.passo.onclick = callbackPasso;
   gInterface.velocidade.onclick = callbackVelocidade;
-
-  callbackResize();
-  
-  criaPeixes();
-  criaArpao();
-
 }
 
 /**
- * resize o tamanho dos elementoss do jogo ao mudar
+ * Desenha os elementos pela primeira vez.
+ */
+function desenha() {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+
+  // resize areia
+  desenhaAreia();
+  criaArpao();
+  criaPeixes();
+}
+
+/**
+ * resize o tamanho dos elementos do jogo ao mudar
  * o tamanho da tela
 */
 function callbackResize() {
@@ -255,19 +272,13 @@ function callbackResize() {
   ctx.canvas.width = window.innerWidth;
   ctx.canvas.height = window.innerHeight;
 
-  // resize areia
+  console.log("Novo tamanho W x H:", ctx.canvas.width, ctx.canvas.height);
+
   desenhaAreia();
-
-  // resize peixes
-  //for(let i = 0; i < N_PEIXES; i++) {
-    //peixes[i].desenhaPeixe();
-  //}
-
-  // resize arpao
-  //arpao.desenhaArpao();
-
-  // resize bolha
-  //
+  arpao.desenhaArpao();
+  for(let i = 0; i < N_PEIXES; i++) {
+    peixes[i].desenhaPeixe();
+  }
 }
 
 function callbackKeyDown(e) {
@@ -275,6 +286,7 @@ function callbackKeyDown(e) {
     let tecla = e.keyCode;
     // tecla A: arpao move para esquerda
     if (tecla == 65) {
+      console.log("Tecla pressionada: A");
       desenhaAreia();
       arpao.moveArpao(ESQUERDA);
       arpao.desenhaArpao();
@@ -282,6 +294,7 @@ function callbackKeyDown(e) {
   
     // tecla D: arpao move para direita
     else if (tecla == 68) {
+      console.log("Tecla pressionada: D");
       desenhaAreia();
       arpao.moveArpao(DIREITA);
       arpao.desenhaArpao();
@@ -289,6 +302,7 @@ function callbackKeyDown(e) {
   
     // tecla S: arpao dispara bolha
     else if (tecla == 83) {
+      console.log("Tecla pressionada: S");
       if (!BOLHA_ATIVA) {
         BOLHA_ATIVA = 1;
         bolha = new Bolha(arpao.a[0], arpao.a[1]);
@@ -321,6 +335,7 @@ function callbackPasso() {
 function callbackVelocidade() {
   VELOCIDADE_JOGO = gInterface.velocidade.value;
   gInterface.pVelocidade.innerHTML = "Velocidade x" + VELOCIDADE_JOGO/10;
+  console.log("Nova velocidade:", VELOCIDADE_JOGO/10);
 }
 
 /**
@@ -400,6 +415,7 @@ function passo() {
     bolha.moveBolha();
     for(let i = 0; i < N_PEIXES; i++) {
       if (bolha.checaColisao(peixes[i])) {
+        console.log("Acertou o peixe", i, "em", peixes[i].x, peixes[i].y);
         peixes.splice(i, 1);
         N_PEIXES -= 1;
         console.log(peixes);
@@ -413,4 +429,19 @@ function passo() {
   if (BOLHA_ATIVA) {
     bolha.desenhaBolha();
   }
+
+  /**
+   * Auxilio para debugar quando o jogo está pausado
+   */
+  if (gInterface.pausado) {
+    console.log("Passo", true);
+    if (N_PEIXES > 0) {
+      console.log("Passo: Peixe 0 tem velocidade: (", peixes[0].velX, peixes[0].velY, ")");
+      console.log("Passo: Peixe 0 está agora em: (", peixes[0].x, peixes[0].y, ")");
+    }
+    if (BOLHA_ATIVA) {
+      console.log("Bolha está agora em (", bolha.x, bolha.y, ")");
+    }
+  }
+
 }
