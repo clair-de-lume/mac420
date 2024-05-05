@@ -20,3 +20,35 @@ ATENÇÃO! Buffers não tem acesso aleatório. Ao invés disso, cada vez que o v
 - Uniformes: são variáveis globais setadas antes de executar o shader.
 - Texturas: arrays de dados que o shader pode acessar aleatoriamente.
 - Varyings: modo com que o vertex shader passa dados para o fragment shader. 
+
+## Escrevendo um "Hello World" em WebGL
+
+No WebGL, você deve se preocupar com 2 coisas: coordenadas do clip space e cores. O vertex shader cuida das coordenadas e o fragment shader cuida das cores.
+
+Essas coordenadas sempre vão de -1 até +1. Ou seja, num plano cartesiano, o canvas do WebGl é um quadrado de lado 1 centrado na origem.
+
+Um exemplo dos shaders:
+
+`
+attribute vec4 a_position; // um array de tamanho 4 chamado a_position
+ 
+// all shaders have a main function
+void main() {
+ 
+  // gl_Position is a special variable a vertex shader
+  // is responsible for setting
+  gl_Position = a_position;
+}`
+
+`// fragment shaders don't have a default precision so we need
+// to pick one. mediump is a good default. It means "medium precision"
+precision mediump float;
+ 
+void main() {
+  // gl_FragColor is a special variable a fragment shader
+  // is responsible for setting
+  gl_FragColor = vec4(1, 0, 0.5, 1); // return reddish-purple
+}` 
+
+Cada elemento do array gl_FragColor corresponde a uma cor (RGB e alfa=opacidade).
+
