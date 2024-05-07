@@ -1,12 +1,12 @@
-/**
- * Programa usando WegGL para demonstrar a animação de 
- * bolas usando translação, rotação e escala combinadas em uma
- * única matriz.
- * 
- * Bibliotecas utilizadas
- * macWebglUtils.js
- * MVnew.js do livro do Angel -- Interactive Computer Graphics
- * 
+/*
+  EP3 de MAC0420/MAC5744 - Dengue
+
+  Nome: Luísa Menezes da Costa
+  NUSP: 12676491
+  
+  Referências:
+  - MDN Web Docs
+  - algumas funções foram retiradas diretamente das notas de aula
  */
 
 "use strict";
@@ -25,8 +25,8 @@ const COR_INSETICIDA_BICO = [0, 0.8, 1, 1];
 const ALT_PASSO = 0.02;
 const ANG_PASSO = 2;
 
-const TIRO_VX = 0.03;
-const TIRO_VY = 0.03;
+const TIRO_VX = 0.07;
+const TIRO_VY = 0.07;
 
 const COR_TIRO = [0, 0, 0, 1]
 const G = -0.05;
@@ -43,6 +43,7 @@ const BORDA = 0.15;
 
 const FUNDO = [0, 1, 1, 1];
 const N_MOSQUITOS = 5;
+const PERTURBACAO_VOO = [0.001, -0.001];
 
 // ==================================================================
 // variáveis globais do WebGL
@@ -81,6 +82,22 @@ var gInterface = {
 var TIRO_ATIVO = false;
 var VELOCIDADE_JOGO = 3;
 
+/**
+ * Uma classe para um objeto Mosquito.
+ * Mosquito possui os atributos: 
+ * - vertices: um vetor de vertices do corpo
+ * - pos: um vec2 com sua posicao (x,y)
+ * - vel: um vec2 com sua velocidade (vx, vy) 
+ * - cor: uma constante com sua cor do corpo em RGBA
+ * - sx: sua escala em x
+ * - sy: sua escala em y
+ * - olhoE: um vetor de vertices do olho esquerdo
+ * - olhoD: um vetor de vertices do olho direito
+ * - asaE: um vetor de vertices da asa esquerda
+ * - asaD: um vetor de vertices da asa direita
+ * - thetaAsa: o angulo de rotacao das asas
+ * - velAsa: a velocidade angular da asa
+ */
 class Mosquito {
   vertices;
   pos;
@@ -93,6 +110,16 @@ class Mosquito {
   thetaAsa;
   velAsa;
 
+  /**
+   * Construtor da classe Mosquito
+   * @param {Number} x - posicao x inicial
+   * @param {Number} y - posicao y inicial
+   * @param {Number} vx - velocidade horizontal inicial
+   * @param {Number} vy - velocidade vertical inicial
+   * @param {Number} sx - escala no eixo x
+   * @param {Number} sy - escala no eixo y
+   * @param {Array} cor - cor das asas e olhos
+   */
   constructor(x, y, vx, vy, sx, sy, cor) {
     this.vertices = [
     vec2(0.5, 0.5),
@@ -100,6 +127,7 @@ class Mosquito {
     vec2(-0.5, -0.5),
     vec2(0.5, -0.5)
     ];
+
     this.olhoE = aproximeDisco(1, 2);
     this.olhoD = aproximeDisco(1, 2);
     this.asaE = defineTriangulo(0, 0, 1, 1, "esquerda");
@@ -107,7 +135,7 @@ class Mosquito {
 
     this.nv = this.vertices.length;
     this.pos = vec2(x, y);
-    this.vel = vec2(vx, vy);
+    this.vel = vec2(vx, vy);  
 
     this.cor = COR_DENGUE;
     this.cor_olho = cor;
@@ -177,14 +205,39 @@ class Mosquito {
     }
   }
 
+  /**
+   * Atualiza a posicao do mosquito de acordo com a variacao de tempo.
+   * Adiciona perturbaçoes na velocidade (ate um certo limite) e reflete a
+   * trajetoria do mosquito se ele bater em alguma borda. Faz as asas rotacionarem
+   * ate um angulo maximo pre-definido.
+   * @param {Number} delta intervalo de tempo
+   */
   atualizaMosquito(delta) {
     // adiciona a perturbacao no voo
-    let velocidadeAleatoria = vec2(sorteie_numero(-MAX_VEL_DENGUE, MAX_VEL_DENGUE), sorteie_numero(-MAX_VEL_DENGUE, MAX_VEL_DENGUE));
-    this.vel = velocidadeAleatoria;
+    let velocidadeAleatoria = vec2(sorteie_numero(-0.01, 0.01), sorteie_numero(-0.01, 0.01));
+    this.vel = add(this.vel, velocidadeAleatoria);
+    
+    if (this.vel[0] > 0.1) { this.vel[0] = 0.01; }
+    if (this.vel[0] < -0.1) { this.vel[0] = -0.01; }
+    if (this.vel[1] > 0.1) { this.vel[1] = 0.01; }
+    if (this.vel[1] < -0.1) { this.vel[1] = -0.01; }
     
     // atualiza a posicao do mosquito
     // s = so + (v * t)
-    this.pos = add(this.pos, mult(delta, this.vel));
+    this.pos = add(this.pos, mult(delta, this.vel));    
+    
+    let x = this.pos[0];
+    let y = this.pos[1];
+    let vx = this.vel[0];
+    let vy = this.vel[1];
+
+    // bateu? Altere o trecho abaixo para considerar o raio!
+    if (x < LAR_DENGUE/2 + LAR_INSETICIDA) { x = -x; vx = -vx; };
+    if (y < LAR_DENGUE/2) { y = -y; vy = -vy; };
+    if (x > 1 - LAR_DENGUE/2) { x = 1; vx = -vx;};
+    if (y > 1 - LAR_DENGUE/2) { y = 1; vy = -vy; };
+
+    this.vel = vec2(vx, vy);
 
     // atualiza angulo da asa
     this.thetaAsa = (this.thetaAsa + this.velAsa * delta) % 360;
@@ -201,6 +254,16 @@ class Mosquito {
   }
 }
 
+/**
+ * Uma classe para um objeto Inseticida.
+ *  Inseticida possui os atributos: 
+ * - altura: a altura atual do inseticida
+ * - largura: a largura do inseticida
+ * - vertices: um vetor de vertices da base
+ * - parafuso: um vetor de vertices do parafuso
+ * - bico: um vetor de vertices do bico
+ * - thetaBico: o angulo atual do bico
+ */
 class Inseticida {
   altura;
   largura;
@@ -232,8 +295,6 @@ class Inseticida {
       gPosicoesInseticida.push(this.vertices[i]);
       gCoresInseticida.push(COR_INSETICIDA_BASE);
     }
-
-    console.log(gPosicoesInseticida)
     
     let n = this.parafuso.length;
     let centro = vec2(0, 0);
@@ -256,6 +317,16 @@ class Inseticida {
   }
 }
 
+/**
+ * Uma classe para um objeto Tiro.
+ *  Tiro possui os atributos: 
+ * - posicao: um vec2 com sua posicao atual (x,y)
+ * - vx: sua velocidade horizontal
+ * - vy: sua velocidade vertical
+ * - vel: um vec2 com sua velocidade (vx, vy) 
+ * - cor: uma constante com sua cor em RGBA
+ * - vertices: um vetor de vertices do corpo
+ */
 class Tiro {
   posicao;
   vx; vy;
@@ -263,6 +334,10 @@ class Tiro {
   cor;
   vertices;
 
+  /**
+   * Construtor da classe Tiro que recebe um angulo theta que afeta a posicao
+   * em que o tiro será criado.
+   */
   constructor(theta) {
     let x = LAR_INSETICIDA/2 + BICO_INSETICIDA * Math.cos(degreesToRadians(theta));
     let y = gInseticida.altura + BICO_INSETICIDA * Math.sin(degreesToRadians(theta));
@@ -290,6 +365,10 @@ class Tiro {
     }
   }
 
+  /**
+   * Metodo de Tiro que atualiza a posicao do tiro levando em conta
+   * suas velocidades e a gravidade.
+   */
   atualizeTiro(delta) {
     let x = this.posicao[0];
     let vx = this.vel[0];
@@ -312,6 +391,10 @@ class Tiro {
       delete this;
     }
   }
+
+  /**
+   * Metodo de Tiro que checa se ele colidiu com um dado mosquito. 
+   */
   checaColisao(mosquito) {
     let xMosquito = mosquito.pos[0];
     let yMosquito = mosquito.pos[1];
@@ -321,6 +404,8 @@ class Tiro {
 
     if (distancia(xMosquito, yMosquito, xTiro, yTiro) < LAR_DENGUE/2 + 0.01) {
       console.log("colidiu");
+      TIRO_ATIVO = false;
+      delete this;
       return true;
     }
     return false;
@@ -338,23 +423,27 @@ function main() {
   gCanvas = document.getElementById("glcanvas");
   gl = gCanvas.getContext('webgl2');
   if (!gl) alert("WebGL 2.0 isn't available");
-  console.log("Canvas: ", gCanvas.width, gCanvas.height);
-
+  
   constroiInterface();
-
+  
   // cria objetos
   gInseticida = new Inseticida();
-  console.log(gInseticida)
-
+  console.log("inseticida num vertices:", gPosicoesInseticida.length);
+  
   for (let i = 0; i < N_MOSQUITOS; i++) {
     let x = sorteie_numero(BORDA, 1-BORDA);
     let y = sorteie_numero(BORDA, 1-BORDA);
     let vx = sorteie_numero(-MAX_VEL_DENGUE, MAX_VEL_DENGUE);
     let vy = sorteie_numero(-MAX_VEL_DENGUE, MAX_VEL_DENGUE);
     let cor = sorteia_RGB();
-    
+
     gMosquitos.push(new Mosquito(x, y, vx, vy, LAR_DENGUE, ALT_DENGUE, cor));
   }
+  console.log("dengue num vertices:", gPosicoesMosquitos.length/N_MOSQUITOS);
+  console.log("Canvas: ", gCanvas.width, gCanvas.height);
+
+  console.log(gMosquitos);
+  console.log(gPosicoesMosquitos)
 
   // shaders
   crieShaders();
@@ -366,9 +455,14 @@ function main() {
   gl.clearColor(FUNDO[0], FUNDO[1], FUNDO[2], FUNDO[3]);
 
   // finalmente...
-  desenhe();
+  //desenhe();
+  jogar();
 }
 
+/**
+ * Funcao que pega os elementos da interface e os coloca na variavel
+ * glocal gInterface, bem como declara as funcoes de callback.
+ */
 function constroiInterface() {
   gInterface.start = document.getElementById("bRun");
   gInterface.passo = document.getElementById("bStep");
@@ -386,6 +480,11 @@ function constroiInterface() {
 // FUNCOES CALLBACK DA INTERFACE
 // ==================================================================
 
+/*
+ * Funcao callback chamada ao apertar o botão Executar/Pausar. Muda
+ * os estados dos botões da interface, bem como a variavel global
+ * gInterface.pausado para refletir o estado correto da interface e do jogo.
+ */
 function callbackJogar() {
   let u = gInterface.start.value;
   if (u == "Pausar") {
@@ -404,53 +503,116 @@ function callbackJogar() {
   }
 }
 
+
+/*
+ * Funcao callback chamada ao apertar o botão Passo. Identica a funcao
+ * desenhe(), porem o delta sempre sera igual a 0.1 segundo.
+ */
 function callbackPasso() {
   if(gInterface.pausado) {
     console.log("Cliquei em passo");
-    desenhe();
+    
+    // limpa o canvas
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    
+    // cria a matriz de projeção - pode ser feita uma única vez
+    const projection = mat4(
+      2, 0, 0, -1,
+      0, 2, 0, -1,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    );
+    
+    let delta = 0.1;
+    
+    desenheMosquitos(delta, projection);
+    desenheInseticida(projection);
+    if (TIRO_ATIVO) {
+      desenheTiro(delta, projection);
+      
+      for (let i = 0; i < gMosquitos.length; i++) {
+        let mosquito = gMosquitos[i];
+        let colidiu = gTiro.checaColisao(mosquito);
+        
+        if (colidiu) {
+          gCoresMosquitos.splice(60 * i , 60)
+          gPosicoesMosquitos.splice(60 * i , 60);
+          gMosquitos.splice(i, 1);
+        }
+      }
+    }
+    console.log("Passou 0.1 segundo");
+    console.log("Cena:", constroiCena());
+    console.log(gMosquitos[0].pos[0], gMosquitos[0].pos[1])
   }
 }
 
+/*
+ * Funcao callback para mudanca do range de velocidade.
+ * Altera a variavel global VELOCIDADE_JOGO para a velocidade
+ * escolhida pelo usuario.
+ */
 function callbackVelocidade() {
   VELOCIDADE_JOGO = gInterface.velocidade.value;
   console.log("Nova velocidade:", VELOCIDADE_JOGO);
 }
 
+/*
+ * Funcao callback para onkeydown
+ */
 function callbackKeyDown(e) {
   let tecla = e.key;
 
   if (tecla == "i" || tecla == "I") {
     if (gInseticida.altura < ALT_MAX_INSETICIDA) {
       gInseticida.altura += ALT_PASSO;
+      console.log("Nova altura:", gInseticida.altura);
+      console.log("Tecla cima - para cima", gInseticida.altura);
     }
   }
   if (tecla == "k" || tecla == "K") {
     if (gInseticida.altura > ALT_MIN_INSETICIDA) {
       gInseticida.altura -= ALT_PASSO;
+      console.log("Nova altura:", gInseticida.altura);
+      console.log("Tecla baixo - para baixo", gInseticida.altura);
     }
   }
   if (tecla == "j" || tecla == "J") {
     if (gInseticida.thetaBico < ANG_MAX_INSETICIDA) {
       gInseticida.thetaBico += ANG_PASSO;
+      console.log("Novo angulo:", gInseticida.thetaBico);
+      console.log("Tecla esq - roda anti horario", gInseticida.thetaBico);
     }
   }
   if (tecla == "l" || tecla == "L") {
     if (gInseticida.thetaBico > ANG_MIN_INSETICIDA) {
       gInseticida.thetaBico -= ANG_PASSO;
+      console.log("Novo angulo:", gInseticida.thetaBico);
+      console.log("Tecla esq - roda horario", gInseticida.thetaBico);
     }
   }
   if (tecla == "t" || tecla == "T") {
     if (!TIRO_ATIVO) {
       gTiro = new Tiro(gInseticida.thetaBico);
       crieShaderTiro();
-      TIRO_ATIVO = true;  
+      TIRO_ATIVO = true;
+      console.log("Tiro em:", gTiro.posicao[0], gTiro.posicao[1], 0);
+      console.log("Tiro");
     }
   }
 }
 
 /**
- * Usa o shader para desenhar.
- * Assume que os dados já foram carregados e são estáticos.
+ * Desenha continuamente a cena utilizando a funcao desenhe()
+ */
+function jogar() {
+  desenhe();
+  window.requestAnimationFrame(jogar);
+}
+
+/**
+ * Usa o shader para desenhar todos os elementos na cena. Assume que os dados já 
+ * foram carregados e são estáticos.
  */
 function desenhe() {
   // atualiza o relógio
@@ -467,7 +629,14 @@ function desenhe() {
     0, 2, 0, -1,
     0, 0, 1, 0,
     0, 0, 0, 1
-);
+  );
+
+  // se estiver pausado, ainda atualiza a cena,
+  // mas de modo que todos os objetos sejam desenhados
+  // no mesmo lugar    
+  if (gInterface.pausado) {
+    delta = 0;
+  }
 
   desenheMosquitos(delta, projection);
   desenheInseticida(projection);
@@ -479,18 +648,20 @@ function desenhe() {
       let colidiu = gTiro.checaColisao(mosquito);
 
       if (colidiu) {
+        console.log("Acertou!", gTiro.posicao[0], gTiro.posicao[1]);
         gMosquitos.splice(i, 1);
-        gPosicoesMosquitos.splice(60 * i, 60);
-        gCoresMosquitos.splice(60 * i, 60)
+        gCoresMosquitos.splice(60 * i , 60);
+        gPosicoesMosquitos.splice(60 * i , 60);
       }
     }
   }
-
-  if (!gInterface.pausado) {
-    window.requestAnimationFrame(desenhe);
-  }
 }
 
+/**
+ * desenha elementos da classe Mosquito
+ * @param {Number} delta - variacao de tempo
+ * @param {Number} projection - matriz de projecao
+ */
 function desenheMosquitos(delta, projection) {
   // atualiza e desenha mosquitos
   gl.bindVertexArray(gShader.mosquitosVAO);
@@ -540,6 +711,11 @@ function desenheMosquitos(delta, projection) {
   }
 }
 
+/**
+ * desenha um elemento da classe Inseticida
+ * @param {Number} delta - variacao de tempo
+ * @param {Number} projection - matriz de projecao
+ */
 function desenheInseticida(projection) {
   gl.bindVertexArray(gShader.inseticidaVAO);
 
@@ -565,6 +741,11 @@ function desenheInseticida(projection) {
   gl.drawArrays(gl.TRIANGLES, 24, 3); 
 }
 
+/**
+ * desenha um elemento da classe Tiro
+ * @param {Number} delta - variacao de tempo
+ * @param {Number} projection - matriz de projecao
+ */
 function desenheTiro(delta, projection) {
   gl.bindVertexArray(gShader.tiroVAO);
 
@@ -718,6 +899,9 @@ function crieShaderTiro() {
 
 /**
  * sorteia um número entre min e max
+ * @param {Number} min - numero minimo do intervalo
+ * @param {Number} max - numero maximo do intervalo
+ * @returns numero aleatorio em [min, max]
  */
 function sorteie_numero(min, max) {
   return Math.random() * (max - min) + min;
@@ -725,6 +909,7 @@ function sorteie_numero(min, max) {
 
 /**
  * sorteia uma cor aleatoria no formato rgb
+ * @returns array com 4 elementos referentes a RGB e alfa
  */
 function sorteia_RGB() {
   let min = 0;
@@ -738,6 +923,11 @@ function sorteia_RGB() {
   ])
 }
 
+/**
+ * converte um angulo em graus para radianos
+ * @param {Number} degrees - angulo em graus
+ * @returns angulo em radianos
+ */
 function degreesToRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
@@ -782,6 +972,12 @@ function aproximeDisco(raio, ref = 4) {
 /**
  * define os vertices de um triangulo (orientado para direita
  * ou para esquerda) com base b e altura h
+ * @param {Number} x - coordenada horizontal de algum vertice do triangulo
+ * @param {Number} y - coordenada vertical de algum vertice do triangulo
+ * @param {Number} h - altura do triangulo
+ * @param {Number} b - base do triangulo
+ * @param {Number} direcao - orientacao do triangulo
+ * @returns - array de vertices vec2
  */
 function defineTriangulo(x, y, h, b, direcao) {
   if (direcao == "direita") {
@@ -794,7 +990,8 @@ function defineTriangulo(x, y, h, b, direcao) {
 
 /**
  * define os vertices de um hexagono de raio 1 e centrado
- * na origem
+ * na origem (0, 0)
+ * @returns array de vertices
  */
 function defineHexagono() {
   let vertices = [];
@@ -811,9 +1008,32 @@ function defineHexagono() {
   return vertices;
 }
 
+// ========================================================
 /**
  * calcula a distancia entre dois pontos (x1, y1) e (x2, y2)
+ * @param {Number} x1 - do elemento 1
+ * @param {Number} y1 - do elemento 1
+ * @param {Number} x2 - do elemento 2
+ * @param {Number} y2 - do elemento 2
+ * @returns - distancia entre os dois elementos
  */
 function distancia(x1, y1, x2, y2){
   return (Math.sqrt((x1-x2)**2 + (y1-y2)**2))
+}
+
+// ========================================================
+/**
+ * coloca todos os elementos da cena em um unico array
+ * @returns - array com elementos da cena
+ */
+function constroiCena() {
+  let cena = [];
+  cena.push(gInseticida);
+  if (TIRO_ATIVO) {
+    cena.push(gTiro);
+  }
+  for (let i = 0; i < gMosquitos.length; i++) {
+    cena.push(gMosquitos[i]);
+  }
+  return cena;
 }
