@@ -1,6 +1,6 @@
 Breve descrição do seu projeto e desenvolvimento
 
-Introdução: 
+Introdução:
 Pescaria é um jogo simplificando feito em JavaScript e utilizando o recurso "Canva". Ele conta com dois
 botões, Jogar e Passo, e uma barra para determinar a velocidade do jogo. Inicialmente, o jogo inicia
 pausado e o jogador deve clicar em Jogar. Ao clicar nesse botão, os peixes (já criados) começam a se mover

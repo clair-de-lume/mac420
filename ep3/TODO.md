@@ -1,0 +1,5 @@
+- implementar tiro
+  - primeiro com trajetoria nao afetada pela gravidade
+- fazer Pause funcionar
+- checar colisão
+- tirar mosquito da lista em colisao

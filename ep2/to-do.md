@@ -15,6 +15,9 @@
 - OK atualmente, peixe é refletido apenas quando o CENTRO do peixe encosta nas bordas, mas deve ser refletido assim que qualquer parte do peixe encoste numa borda
 - OK peixe nao esta apagando a posição antiga e está criando uma linha contínua
 - OK checar se bolha ja terminou caminho para poder disparar outra
+- OK adicionar arpão
+- OK adicionar peixes
+- OK adicionar titulo da página e botões
 
 # Dúvidas
 - é pra areia ficar tão grossa assim? 

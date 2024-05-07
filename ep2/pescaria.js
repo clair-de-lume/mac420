@@ -443,5 +443,4 @@ function passo() {
       console.log("Bolha está agora em (", bolha.x, bolha.y, ")");
     }
   }
-
 }
