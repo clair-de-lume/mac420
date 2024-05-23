@@ -1,14 +1,12 @@
-/**
- * Programa usando WegGL para demonstrar a animação 3D de um cubo
- * em perspectiva com rotação em cada eixo.
- *  
- * Bibliotecas utilizadas
- * macWebglUtils.js
- * MVnew.js do livro -- Interactive Computer Graphics
- * 
- * Esse programa foi baseado no exemplo cuboV do capítulo 4 do livro 
- * Interactive Computer Graphics - Angel & Shreiner.
- *
+/*
+  EP4 de MAC0420/MAC5744 - Simulador de voo
+
+  Nome: Luísa Menezes da Costa
+  NUSP: 12676491
+  
+  Referências:
+  - MDN Web Docs
+  - algumas funções foram retiradas diretamente das notas de aula
  */
 
 "use strict";
