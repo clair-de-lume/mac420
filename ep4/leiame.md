@@ -4,7 +4,7 @@
 O objetivo deste exercício-programa é aprender como implementar formas primitivas (cubos e esferas) em WebGL2 e aplicar a elas transformações (translação, rotação e escala), como visto em aula.
 
 ## Como rodar o programa
-Dentro de uma pasta contendo os arquivo "voo.js" e "voo.html", abra o .html em seu navegador.
+Dentro de uma pasta contendo os arquivos "voo.js" e "voo.html", abra o .html em seu navegador.
 
 ## Como esse EP funciona?
 Este EP é um simulador de voo sem colisão implementada. Ao abrir o simulador, uma cena com alguns cubos e esferas irá aparecer. Na interface, há dois botões: Executar/Pausar e Passo. O programa deve inicia no estado ‘Pausado’. Ao clicar em “Executar” o botãomuda de estado, para “Pausar”, e os objetos, inclusive a nave, começam a se mover. Clicando novamente em “Pausar”, o botão muda de volta para “Executar” e os objetos e a nave param de se mover. Nesse estado, ao clicar em “Passo”, todos os objetos se movimentar o equivalente a 1 segundo. Esse botão não tem efeito quando os objetos estão se movendo.
