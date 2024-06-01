@@ -65,8 +65,6 @@ var gCtx = {
   axis: 0,   // eixo rodando
   theta: [0, 0, 0],  // angulos por eixo
   pause: true,        // 
-  passo: true,
-  numV: 36,          // número de vertices
   vista: mat4(),     // view matrix, inicialmente identidade
   perspectiva: mat4(), // projection matrix
 };
@@ -131,42 +129,40 @@ class Cubo {
       gaCores.push(vec4(1.0, 1.0, 1.0, 1.0));
     }
     else if (tipo == BOLA) {
-      console.log("coloriu BOLA");
-
-      // (1,0,0,1) - face +x
+      // (1,0,0,1) - face +x - vermelho
       if (a == 1) {
         for (let i = 0; i < 6; i++) {
           gaCores.push(vec4(1.0, 0.0, 0.0, 1.0));
         }
       }
-      // (0,1,1,1) - face -x
+      // (0,1,0,1) - face +y - verde
       else if (a == 2) {
-        for (let i = 0; i < 6; i++) {
-          gaCores.push(vec4(0.0, 1.0, 1.0, 1.0));
-        }
-      }
-      // (0,1,0,1) - face +y
-      else if (a == 3) {
         for (let i = 0; i < 6; i++) {
           gaCores.push(vec4(0.0, 1.0, 0.0, 1.0));
         }
       }
-      // (1,0,1,1) - face -y
-      else if (a == 4) {
+      // (1,0,1,1) - face -y - magenta
+      else if (a == 3) {
         for (let i = 0; i < 6; i++) {
           gaCores.push(vec4(1.0, 0.0, 1.0, 1.0));
         }
       }
-      // (0,0,1,1) - face +z
-      else if (a == 5) {
+      // (0,1,1,1) - face -x - ciano
+      else if (a == 4) {
         for (let i = 0; i < 6; i++) {
-          gaCores.push(vec4(0.0, 0.0, 1.0, 1.0));
+          gaCores.push(vec4(0.0, 1.0, 1.0, 1.0));
         }
       }
-      // (1,1,0,1) - face -z
-      else if (a == 6) {
+      // (1,1,0,1) - face -z - amarelo
+      else if (a == 5) {
         for (let i = 0; i < 6; i++) {
           gaCores.push(vec4(1.0, 1.0, 0.0, 1.0));
+        }
+      }
+      // (0,0,1,1) - face +z - azul
+      else if (a == 6) {
+        for (let i = 0; i < 6; i++) {
+          gaCores.push(vec4(0.0, 0.0, 1.0, 1.0));
         }
       }
     }
@@ -310,10 +306,12 @@ function main() {
   let pos = vec3(0, 0, -10);
   let theta = vec3(0, 0, 0);
   let escala = vec3(500, 20, 500);
-  let vtheta = vec3(0, 0, 0);
+  let vtheta = vec3(0, 0.2, 0);
   let vtrans = vec3(0, 0, 0);
   let cubo = new Cubo(pos, theta, escala, vtheta, vtrans, CHAO);
   gaObjetos.push(cubo);
+  console.log("Cubo num vertices:", cubo.nv);
+  console.log("Cena vertices após cubo 0:", gaPosicoes.length)
 
   // cubo BOLA
   pos = vec3(0, 90, 0);
@@ -323,42 +321,52 @@ function main() {
   vtrans = vec3(0, 0, 0);
   cubo = new Cubo(pos, theta, escala, vtheta, vtrans, BOLA);
   gaObjetos.push(cubo);
+  console.log("Cubo num vertices:", cubo.nv);
+  console.log("Cena vertices após cubo 1:", gaPosicoes.length)
 
   // cubo aleatorio 1
-  pos = vec3(200, 200, 0);
+  pos = vec3(200, 200, 0)
   theta = vec3(0, 0, 0);
   escala = vec3(100, 30, 30);
-  vtheta = vec3(0, 0, 0);
-  vtrans = vec3(0, 0, 0);
+  vtheta = vec3(0, 1, 0);
+  vtrans = vec3(-1, 0, 1);
   cubo = new Cubo(pos, theta, escala, vtheta, vtrans, ALEATORIO);
   gaObjetos.push(cubo);
+  console.log("Cubo num vertices:", cubo.nv);
+  console.log("Cena vertices após cubo 2:", gaPosicoes.length)
 
   // cubo aleatorio 2
   pos = vec3(0, 0, 0);
-  theta = vec3(0, 0, 0);
+  theta = vec3(50, 0, 0);
   escala = vec3(10, 500, 10);
-  vtheta = vec3(0, 0, 0);
+  vtheta = vec3(0, 1, 0);
   vtrans = vec3(0, 0, 0);
   cubo = new Cubo(pos, theta, escala, vtheta, vtrans, ALEATORIO);
   gaObjetos.push(cubo);
+  console.log("Cubo num vertices:", cubo.nv);
+  console.log("Cena vertices após cubo 3:", gaPosicoes.length)
 
   // esfera 1
   pos = vec3(-200, 200, 0);
   theta = vec3(0, 0, 0);
   escala = vec3(100, 30, 30);
-  vtheta = vec3(0, 0, 0);
-  vtrans = vec3(0, 0, 0);
+  vtheta = vec3(1, 0, 0);
+  vtrans = vec3(0, -1, 0);
   let esfera = new Esfera(pos, theta, escala, vtheta, vtrans);
   gaObjetos.push(esfera);
+  console.log("Esfera num vertices:", esfera.nv);
+  console.log("Cena vertices após esfera 0:", gaPosicoes.length)
 
   // esfera 2
   pos = vec3(150, 30, 140);
   theta = vec3(0, 0, 0);
   escala = vec3(100, 100, 100);
-  vtheta = vec3(0, 0, 0);
+  vtheta = vec3(.2, .2, .2);
   vtrans = vec3(0, 0, 0);
   esfera = new Esfera(pos, theta, escala, vtheta, vtrans);
   gaObjetos.push(esfera);
+  console.log("Esfera num vertices:", esfera.nv);
+  console.log("Cena vertices após esfera 1:", gaPosicoes.length)
 
   // interface
   crieInterface();
@@ -389,16 +397,56 @@ function crieInterface() {
       valor.innerHTML = "Pausar"
       passo.disabled = true;
       gCtx.passo = false;
+      console.log("Pausado:", gCtx.passo)
     }
     else {
       valor.innerHTML = "Executar"
       passo.disabled = false;
       gCtx.passo = true;
+      console.log("Pausado:", gCtx.passo)
     }
   };
 
   document.getElementById("stepButton").onclick = function () {
+    console.log("Clicou em passo:", true);
     passo();
+  }
+
+  window.onkeydown = callbackKeyDown;
+}
+
+// ==================================================================
+/**
+ * Define as atualizacoes da camera de acordo com a tecla pressionada
+ */
+function callbackKeyDown(e) {
+  let tecla = e.key;
+  if  (tecla == "J" || tecla == "j") {
+    console.log("Tecla J - vel--");
+  }
+  else if  (tecla == "K" || tecla == "k") {
+    console.log("Tecla K - zera vtrans");
+  }
+  else if  (tecla == "L" || tecla == "l") {
+    console.log("Tecla L - vel++");
+  }
+  else if  (tecla == "W" || tecla == "w") {
+    console.log("Tecla W - rot para cima");
+  }
+  else if  (tecla == "X" || tecla == "x") {
+    console.log("Tecla X- rot para baixo");
+  }
+  else if  (tecla == "A" || tecla == "a") {
+    console.log("Tecla A - rot para esq");
+  }
+  else if  (tecla == "D" || tecla == "d") {
+    console.log("Tecla D - rot para dir");
+  }
+  else if  (tecla == "Z" || tecla == "z") {
+    console.log("Tecla Z - rot anti horario");
+  }
+  else if  (tecla == "C" || tecla == "c") {
+    console.log("Tecla C - rot horario");
   }
 }
 
@@ -407,7 +455,7 @@ function crieShaders() {
   gShader.program = makeProgram(gl, gVertexShaderSrc, gFragmentShaderSrc);
   gl.useProgram(gShader.program);
 
-  // buffer dos vértices dos cubos
+  // buffer dos vértices
   var bufVertices = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(gaPosicoes), gl.STATIC_DRAW);
@@ -416,7 +464,7 @@ function crieShaders() {
   gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(aPosition);
 
-  // buffer de cores dos cubos
+  // buffer de cores
   var bufCores = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, bufCores);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(gaCores), gl.STATIC_DRAW);
@@ -428,6 +476,7 @@ function crieShaders() {
   // resolve os uniforms
   gShader.uModelView = gl.getUniformLocation(gShader.program, "uModelView");
   gShader.uPerspective = gl.getUniformLocation(gShader.program, "uPerspective");
+
   // calcula a matriz de transformação perpectiva (fovy, aspect, near, far)
   // que é feita apenas 1 vez
   gCtx.perspectiva = perspective(FOVY, ASPECT, NEAR, FAR);
@@ -441,15 +490,21 @@ function passo() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // atualiza cubos 
-  gaObjetos[0].theta[1] += 1;   // CHAO
-  gaObjetos[1].theta[1] -= 1;   // BOLA
-  gaObjetos[2].theta[1] += 1;   // CUBO 1
-  gaObjetos[3].theta[1] += 1;   // CUBO 2
-  gaObjetos[4].theta[1] += 1;   // ESFERA 1  
-  gaObjetos[5].theta[1] += 1;   // ESFERA 2  
+  atualizaChao();
+  atualizaCubo1();
+  atualizaCubo2();
 
+  // atualiza esferas
+  atualizaEsfera1(); 
+  atualizaEsfera2();
+
+  // desenha objetos
   desenhaChao();
   desenhaBola();
+  desenhaCubo1();
+  desenhaCubo2();
+  desenhaEsfera1();
+  desenhaEsfera2();
 }
 
 // ==================================================================
@@ -466,12 +521,17 @@ function render() {
   desenhaCubo2();
   desenhaEsfera1();
   desenhaEsfera2();
+
   window.requestAnimationFrame(render);
+}
+
+function atualizaChao() {
+  gaObjetos[0].theta[EIXO_Y] += gaObjetos[0].vtheta[EIXO_Y];
 }
 
 function desenhaChao() {
   // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[0].theta[1] += 1;
+  if (!gCtx.pause) atualizaChao();
 
   // rotacao apenas no eixo y
   let ry = rotateY(gaObjetos[0].theta[EIXO_Y]);
@@ -482,43 +542,55 @@ function desenhaChao() {
   // translacao
   let t = translate(gaObjetos[0].pos[0], gaObjetos[0].pos[1], gaObjetos[0].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
   let model = mult(t, mult(s, ry));
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
-  gl.drawArrays(gl.TRIANGLES, 0, gCtx.numV);
+  gl.drawArrays(gl.TRIANGLES, 0, gaObjetos[0].nv);
 }
 
 function desenhaBola() {
-  // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[1].theta[1] -= 1;
-
-  // rotacao em cada eixo
-  let rx = rotateX(gaObjetos[1].theta[EIXO_X]);
-  let ry = rotateY(gaObjetos[1].theta[EIXO_Y]);
-  let rz = rotateZ(gaObjetos[1].theta[EIXO_Z]);
-
   // escala
   let s = scale(gaObjetos[1].escala[0], gaObjetos[1].escala[1], gaObjetos[1].escala[2]);
   
   // translacao
   let t = translate(gaObjetos[1].pos[0], gaObjetos[1].pos[1], gaObjetos[1].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
-  let model = mult(t, mult(s, ry));
+  let model = mult(t, s);
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
-  gl.drawArrays(gl.TRIANGLES, 36, gCtx.numV);
+  gl.drawArrays(gl.TRIANGLES, 36, gaObjetos[1].nv);
+}
+
+function atualizaCubo1() {
+  // atualiza rotacao do cubo 1
+  gaObjetos[2].theta[EIXO_Y] += gaObjetos[2].vtheta[EIXO_Y];
+
+  // atualiza posicao do cubo 1
+  gaObjetos[2].pos[EIXO_X] += gaObjetos[2].vtrans[EIXO_X];
+  gaObjetos[2].pos[EIXO_Z] += gaObjetos[2].vtrans[EIXO_Z];
+
+  // garante que cubo 1 esteja sempre no intervalo (200, 200, 0)
+  // ate (0, 200, 200)
+  if (gaObjetos[2].pos[EIXO_X] <= 0) {
+    gaObjetos[2].vtrans[EIXO_X] = -gaObjetos[2].vtrans[EIXO_X];
+  }
+  if (gaObjetos[2].pos[EIXO_X] >= 200) {
+    gaObjetos[2].vtrans[EIXO_X] = -gaObjetos[2].vtrans[EIXO_X];
+  }
+  if (gaObjetos[2].pos[EIXO_Z] >= 200) {
+    gaObjetos[2].vtrans[EIXO_Z] = -gaObjetos[2].vtrans[EIXO_Z];
+  }
+  if (gaObjetos[2].pos[EIXO_Z] <= 0) {
+    gaObjetos[2].vtrans[EIXO_Z] = -gaObjetos[2].vtrans[EIXO_Z];
+  }
 }
 
 function desenhaCubo1() {
   // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[2].theta[1] -= 1;
+  if (!gCtx.pause) atualizaCubo1();
 
-  // rotacao em cada eixo
-  let rx = rotateX(gaObjetos[2].theta[EIXO_X]);
+  // rotacao apenas no eixo Y
   let ry = rotateY(gaObjetos[2].theta[EIXO_Y]);
-  let rz = rotateZ(gaObjetos[2].theta[EIXO_Z]);
 
   // escala
   let s = scale(gaObjetos[2].escala[0], gaObjetos[2].escala[1], gaObjetos[2].escala[2]);
@@ -526,16 +598,19 @@ function desenhaCubo1() {
   // translacao
   let t = translate(gaObjetos[2].pos[0], gaObjetos[2].pos[1], gaObjetos[2].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
   let model = mult(t, mult(s, ry));
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
-  gl.drawArrays(gl.TRIANGLES, 72, gCtx.numV);
+  gl.drawArrays(gl.TRIANGLES, 72, gaObjetos[2].nv);
+}
+
+function atualizaCubo2() {
+  gaObjetos[3].theta[EIXO_Y] += gaObjetos[3].vtheta[EIXO_Y];
 }
 
 function desenhaCubo2() {
   // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[3].theta[1] -= 1;
+  if (!gCtx.pause) atualizaCubo2();
 
   // rotacao em cada eixo
   let rx = rotateX(gaObjetos[3].theta[EIXO_X]);
@@ -548,19 +623,33 @@ function desenhaCubo2() {
   // translacao
   let t = translate(gaObjetos[3].pos[0], gaObjetos[3].pos[1], gaObjetos[3].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
   let model = mult(t, mult(s, ry));
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
-  gl.drawArrays(gl.TRIANGLES, 108, gCtx.numV);
+  gl.drawArrays(gl.TRIANGLES, 108, gaObjetos[3].nv);
+}
+
+function atualizaEsfera1() {
+  gaObjetos[4].theta[EIXO_X] += gaObjetos[4].vtheta[EIXO_X]
+
+  gaObjetos[4].pos[EIXO_Y] += gaObjetos[4].vtrans[EIXO_Y];
+
+  // garante que esfera 1 esteja sempre no intervalo (-200, 200, 0)
+  // ate (-200, -50, 200)
+  if (gaObjetos[4].pos[EIXO_Y] <= -50) {
+    gaObjetos[4].vtrans[EIXO_Y] = -gaObjetos[4].vtrans[EIXO_Y];
+  }
+  if (gaObjetos[4].pos[EIXO_Y] >= 200) {
+    gaObjetos[4].vtrans[EIXO_Y] = -gaObjetos[4].vtrans[EIXO_Y];
+  }
 }
 
 function desenhaEsfera1() {
   // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[4].theta[1] += 1;
+  if (!gCtx.pause) atualizaEsfera1();
 
-  // rotacao apenas no eixo y
-  let ry = rotateY(gaObjetos[4].theta[EIXO_Y]);
+  // rotacao apenas no eixo x
+  let rx = rotateX(gaObjetos[4].theta[EIXO_X])
 
   // escala
   let s = scale(gaObjetos[4].escala[0], gaObjetos[4].escala[1], gaObjetos[4].escala[2]);
@@ -568,19 +657,26 @@ function desenhaEsfera1() {
   // translacao
   let t = translate(gaObjetos[4].pos[0], gaObjetos[4].pos[1], gaObjetos[4].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
-  let model = mult(t, mult(s, ry));
+  let model = mult(t, mult(s, rx));
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
   gl.drawArrays(gl.TRIANGLES, 144, gaObjetos[4].nv);
 }
 
+function atualizaEsfera2() {
+  gaObjetos[5].theta[EIXO_X] += gaObjetos[5].vtheta[EIXO_X];
+  gaObjetos[5].theta[EIXO_Y] += gaObjetos[5].vtheta[EIXO_Y];
+  gaObjetos[5].theta[EIXO_Z] += gaObjetos[5].vtheta[EIXO_Z];
+}
+
 function desenhaEsfera2() {
   // modelo muda a cada frame da animação
-  if (!gCtx.pause) gaObjetos[5].theta[1] += 1;
+  if (!gCtx.pause) atualizaEsfera2();
 
-  // rotacao apenas no eixo y
-  let ry = rotateX(gaObjetos[5].theta[EIXO_Y]);
+  // rotacao em todos os eixos
+  let rx = rotateX(gaObjetos[5].theta[EIXO_X]);
+  let ry = rotateY(gaObjetos[5].theta[EIXO_Y]);
+  let rz = rotateZ(gaObjetos[5].theta[EIXO_Z]);
 
   // escala
   let s = scale(gaObjetos[5].escala[0], gaObjetos[5].escala[1], gaObjetos[5].escala[2]);
@@ -588,8 +684,7 @@ function desenhaEsfera2() {
   // translacao
   let t = translate(gaObjetos[5].pos[0], gaObjetos[5].pos[1], gaObjetos[5].pos[2]);
     
-  //let model = mult(t, mult(s, mult(rz, mult(ry, rx))));
-  let model = mult(t, mult(s, ry));
+  let model = mult(t, mult(s, mult(rz, mult(rx, ry))));
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
   gl.drawArrays(gl.TRIANGLES, 528, gaObjetos[5].nv);
