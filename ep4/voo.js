@@ -41,11 +41,12 @@ const vCubo = [
   vec3(0.5, -0.5, -0.5)
 ];
 
-// modos de colorir
+// modos de colorir objetos da classe Cubo
 const CHAO = 0;
 const BOLA = 1;
 const ALEATORIO = 2;
 
+// constantes uteis para classe Esfera
 const N_DIVISOES = 2;
 const COR_SOLIDA = false;
 const COR_ESFERA = [1.0, 1.0, 0.0, 1.0];
@@ -62,13 +63,14 @@ var gaCores = [];
 
 // guarda dados da interface e contexto do desenho
 var gCtx = {
-  axis: 0,   // eixo rodando
-  theta: [0, 0, 0],  // angulos por eixo
   pause: true,        // 
   vista: mat4(),     // view matrix, inicialmente identidade
   perspectiva: mat4(), // projection matrix
 };
 
+// ========================================================
+// Geração do modelo de um cubo de lado unitário
+// ========================================================
 class Cubo {
   nv = 36;
   pos;
@@ -123,11 +125,13 @@ class Cubo {
       gaCores.push(vec4(0.0, 0.0, 0.0, 1.0));
       gaCores.push(vec4(0.0, 0.0, 0.0, 1.0));
       gaCores.push(vec4(0.0, 0.0, 0.0, 1.0));
+
       // triangulo branco
       gaCores.push(vec4(1.0, 1.0, 1.0, 1.0));
       gaCores.push(vec4(1.0, 1.0, 1.0, 1.0));
       gaCores.push(vec4(1.0, 1.0, 1.0, 1.0));
     }
+
     else if (tipo == BOLA) {
       // (1,0,0,1) - face +x - vermelho
       if (a == 1) {
@@ -184,9 +188,8 @@ class Cubo {
 }
 
 /* ==================================================================
-    Funções para criar uma esfera de raio unitário centrada na origem.
+    Classe para criar uma esfera de raio unitário centrada na origem.
 */
-
 class Esfera {
   nv = 384;       // se N_DIVISOES == 2
   pos;
@@ -210,39 +213,39 @@ class Esfera {
    * @param {Number} n - profundidade da recursão
    */
   crieEsfera(ndivisoes = 2) {
-  // começamos com os vértices de um balão
-  let vp = [
-    vec3(1.0, 0.0, 0.0),
-    vec3(0.0, 1.0, 0.0),
-    vec3(0.0, 0.0, 1.0),
-  ];
+    // começamos com os vértices de um balão
+    let vp = [
+      vec3(1.0, 0.0, 0.0),
+      vec3(0.0, 1.0, 0.0),
+      vec3(0.0, 0.0, 1.0),
+    ];
 
-  let vn = [
-    vec3(-1.0, 0.0, 0.0),
-    vec3(0.0, -1.0, 0.0),
-    vec3(0.0, 0.0, -1.0),
-  ];
+    let vn = [
+      vec3(-1.0, 0.0, 0.0),
+      vec3(0.0, -1.0, 0.0),
+      vec3(0.0, 0.0, -1.0),
+    ];
 
-  let triangulo = [
-    [vp[0], vp[1], vp[2]],
-    [vp[0], vp[1], vn[2]],
+    let triangulo = [
+      [vp[0], vp[1], vp[2]],
+      [vp[0], vp[1], vn[2]],
 
-    [vp[0], vn[1], vp[2]],
-    [vp[0], vn[1], vn[2]],
+      [vp[0], vn[1], vp[2]],
+      [vp[0], vn[1], vn[2]],
 
-    [vn[0], vp[1], vp[2]],
-    [vn[0], vp[1], vn[2]],
+      [vn[0], vp[1], vp[2]],
+      [vn[0], vp[1], vn[2]],
 
-    [vn[0], vn[1], vp[2]],
-    [vn[0], vn[1], vn[2]],
-  ];
+      [vn[0], vn[1], vp[2]],
+      [vn[0], vn[1], vn[2]],
+    ];
 
-  for (let i = 0; i < triangulo.length; i++) {
-    let a, b, c;
-    [a, b, c] = triangulo[i];
-    this.dividaTriangulo(a, b, c, ndivisoes);
-  }
-};
+    for (let i = 0; i < triangulo.length; i++) {
+      let a, b, c;
+      [a, b, c] = triangulo[i];
+      this.dividaTriangulo(a, b, c, ndivisoes);
+    }
+  };
 
   dividaTriangulo(a, b, c, ndivs) {
     // Cada nível quebra um triângulo em 4 subtriângulos
@@ -271,6 +274,13 @@ class Esfera {
     }
   };
 
+  /**
+   * coloca os vertices do triangulo atual nos
+   * arrays globais de posicao e de cores
+   * @param {Number} a - vertice do triangulo
+   * @param {Number} b - vertice do triangulo
+   * @param {Number} c - vertice do triangulo
+   */
   insiraTriangulo(a, b, c) {
     gaPosicoes.push(a);
     gaPosicoes.push(b);
@@ -324,7 +334,7 @@ function main() {
   console.log("Cubo num vertices:", cubo.nv);
   console.log("Cena vertices após cubo 1:", gaPosicoes.length)
 
-  // cubo aleatorio 1
+  // CUBO1
   pos = vec3(200, 200, 0)
   theta = vec3(0, 0, 0);
   escala = vec3(100, 30, 30);
@@ -335,7 +345,7 @@ function main() {
   console.log("Cubo num vertices:", cubo.nv);
   console.log("Cena vertices após cubo 2:", gaPosicoes.length)
 
-  // cubo aleatorio 2
+  // CUBO2
   pos = vec3(0, 0, 0);
   theta = vec3(50, 0, 0);
   escala = vec3(10, 500, 10);
@@ -346,7 +356,7 @@ function main() {
   console.log("Cubo num vertices:", cubo.nv);
   console.log("Cena vertices após cubo 3:", gaPosicoes.length)
 
-  // esfera 1
+  // ESFERA1
   pos = vec3(-200, 200, 0);
   theta = vec3(0, 0, 0);
   escala = vec3(100, 30, 30);
@@ -357,7 +367,7 @@ function main() {
   console.log("Esfera num vertices:", esfera.nv);
   console.log("Cena vertices após esfera 0:", gaPosicoes.length)
 
-  // esfera 2
+  // ESFERA2
   pos = vec3(150, 30, 140);
   theta = vec3(0, 0, 0);
   escala = vec3(100, 100, 100);
@@ -450,6 +460,10 @@ function callbackKeyDown(e) {
   }
 }
 
+// ==================================================================
+/**
+ * cria e configura os shaders
+ */
 function crieShaders() {
   //  cria o programa
   gShader.program = makeProgram(gl, gVertexShaderSrc, gFragmentShaderSrc);
@@ -486,6 +500,10 @@ function crieShaders() {
   gCtx.vista = lookAt(eye, at, up);
 }
 
+/*
+ * Funcao callback chamada ao apertar o botão Passo. Atualiza os elementos
+ * apenas 1 vez e depois desenha cada um deles
+ */
 function passo() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -525,10 +543,19 @@ function render() {
   window.requestAnimationFrame(render);
 }
 
+// ==================================================================
+/**
+ * Atualiza o estado do cubo CHAO
+ */
 function atualizaChao() {
+  // atualiza rotacao de CHAO
   gaObjetos[0].theta[EIXO_Y] += gaObjetos[0].vtheta[EIXO_Y];
 }
 
+// ==================================================================
+/**
+ * Desenha o estado atual do cubo CHAO
+ */
 function desenhaChao() {
   // modelo muda a cada frame da animação
   if (!gCtx.pause) atualizaChao();
@@ -548,6 +575,10 @@ function desenhaChao() {
   gl.drawArrays(gl.TRIANGLES, 0, gaObjetos[0].nv);
 }
 
+// ==================================================================
+/**
+ * Desenha o estado atual do cubo BOLA
+ */
 function desenhaBola() {
   // escala
   let s = scale(gaObjetos[1].escala[0], gaObjetos[1].escala[1], gaObjetos[1].escala[2]);
@@ -561,6 +592,10 @@ function desenhaBola() {
   gl.drawArrays(gl.TRIANGLES, 36, gaObjetos[1].nv);
 }
 
+// ==================================================================
+/**
+ * Atualiza o estado do CUBO1
+ */
 function atualizaCubo1() {
   // atualiza rotacao do cubo 1
   gaObjetos[2].theta[EIXO_Y] += gaObjetos[2].vtheta[EIXO_Y];
@@ -584,7 +619,10 @@ function atualizaCubo1() {
     gaObjetos[2].vtrans[EIXO_Z] = -gaObjetos[2].vtrans[EIXO_Z];
   }
 }
-
+// ==================================================================
+/**
+ * Desenha o estado atual do CUBO1
+ */
 function desenhaCubo1() {
   // modelo muda a cada frame da animação
   if (!gCtx.pause) atualizaCubo1();
@@ -604,18 +642,25 @@ function desenhaCubo1() {
   gl.drawArrays(gl.TRIANGLES, 72, gaObjetos[2].nv);
 }
 
+// ==================================================================
+/**
+ * Atualiza o estado do CUBO2
+ */
 function atualizaCubo2() {
+  // atualiza rotacao do cubo2
   gaObjetos[3].theta[EIXO_Y] += gaObjetos[3].vtheta[EIXO_Y];
 }
 
+// ==================================================================
+/**
+ * Desenha o estado atual do CUBO2
+ */
 function desenhaCubo2() {
   // modelo muda a cada frame da animação
   if (!gCtx.pause) atualizaCubo2();
 
-  // rotacao em cada eixo
-  let rx = rotateX(gaObjetos[3].theta[EIXO_X]);
+  // rotacao apenas no eixo Y
   let ry = rotateY(gaObjetos[3].theta[EIXO_Y]);
-  let rz = rotateZ(gaObjetos[3].theta[EIXO_Z]);
 
   // escala
   let s = scale(gaObjetos[3].escala[0], gaObjetos[3].escala[1], gaObjetos[3].escala[2]);
@@ -629,9 +674,15 @@ function desenhaCubo2() {
   gl.drawArrays(gl.TRIANGLES, 108, gaObjetos[3].nv);
 }
 
+// ==================================================================
+/**
+ * Atualiza o estado de ESFERA1
+ */
 function atualizaEsfera1() {
+  // atualiza rotacao de esfera1
   gaObjetos[4].theta[EIXO_X] += gaObjetos[4].vtheta[EIXO_X]
 
+  // atualiza posicao de esfera1
   gaObjetos[4].pos[EIXO_Y] += gaObjetos[4].vtrans[EIXO_Y];
 
   // garante que esfera 1 esteja sempre no intervalo (-200, 200, 0)
@@ -644,6 +695,10 @@ function atualizaEsfera1() {
   }
 }
 
+// ==================================================================
+/**
+ * Desenha o estado atual da ESFERA1
+ */
 function desenhaEsfera1() {
   // modelo muda a cada frame da animação
   if (!gCtx.pause) atualizaEsfera1();
@@ -663,12 +718,21 @@ function desenhaEsfera1() {
   gl.drawArrays(gl.TRIANGLES, 144, gaObjetos[4].nv);
 }
 
+// ==================================================================
+/**
+ * Atualiza o estado de ESFERA2
+ */
 function atualizaEsfera2() {
+  // atualiza rotacao de esfera2
   gaObjetos[5].theta[EIXO_X] += gaObjetos[5].vtheta[EIXO_X];
   gaObjetos[5].theta[EIXO_Y] += gaObjetos[5].vtheta[EIXO_Y];
   gaObjetos[5].theta[EIXO_Z] += gaObjetos[5].vtheta[EIXO_Z];
 }
 
+// ==================================================================
+/**
+ * Desenha o estado atual da ESFERA2
+ */
 function desenhaEsfera2() {
   // modelo muda a cada frame da animação
   if (!gCtx.pause) atualizaEsfera2();
