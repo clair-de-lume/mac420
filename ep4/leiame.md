@@ -24,7 +24,15 @@ O estado do EP também pode ser mudado pelas teclas do teclado. O usuário pode 
 | C     | incrementa a rotação no eixo Z        |
 
 ## Dependências
-Esse EP não possui dependências. A única coisa que você precisa é de um navegador web que suporte WebGL2. 
+Esse EP não possui dependências. A única coisa que você precisa é de um navegador web que suporte WebGL2.
+
+## Breve descrição dos objetos da cena
+- CHAO: está na posição (0, 0, -10) e tem escala (500, 20, 500). Não possui velocidade de translação, i.e., não muda de posição, mas possui velocidade de rotação (0, 0.2, 0), ou seja, roda apenas em torno do eixo Y.
+- BOLA: está na posição (0, 90, 0) e tem escala (30, 30, 30). Não possui velocidade de translação nem de rotação.
+- CUBO1: está na posição (200, 200, 0) e tem escala (100, 30, 30). Possui velocidade de translação (-1, 0, 1), i.e., se move em uma linha reta no meio dos eixos X e Z, a partir de sua posição inicial até uma posição pré-definida (0, 200, 200). Quando atinge essa posição máxima, os sinais das velocidades são invertidos e CUBO1 anda em linha reta até sua posição inicial. Possui também velocidade de rotação (0, 1, 0), ou seja, roda apenas em torno do eixo Y.
+- CUBO2: está na posição (0, 0, 0) e tem escala (10, 500, 10). Não possui velocidade de translação, mas possui velocidade de rotação (0, 1, 0).
+- ESFERA1: está na posição (-200, 200, 0) e tem escala (100, 30, 30). Possui velocidade de translação (0, -1, 0), i.e., se move em uma linha reta seguindo o eixo Y, a partir de sua posição inicial até uma posição pré-definida (-200, -50, 0). Quando atinge essa posição máxima, os sinais das velocidades são invertidos e ESFERA1 anda em linha reta até sua posição inicial. Possui também velocidade de rotação (1, 0, 0), ou seja, roda apenas em torno do eixo X.
+- ESFERA2: está na posição (150, 30, 140) e tem escala (100, 100, 100). Não possui velocidade de translação, mas possui velocidade de rotação (0.2, 0.2, 0.2), i.e, rotaciona em torno de todos os eixos.
 
 ## Bugs conhecidos
 Nenhum bug conhecido até agora.
