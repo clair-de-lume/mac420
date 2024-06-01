@@ -20,13 +20,17 @@ const EIXO_Y = 1;
 const EIXO_Z = 2;
 
 //camera
-const eye = vec3(400, 500, 500);
-const at = vec3(0, 0, 0);
-const up = vec3(0, 1, 0);
-const FOVY = 60;
-const ASPECT = 1;
-const NEAR = 0.1;
-const FAR = 2000;
+var EYE = vec3(400, 500, 500);
+var AT = vec3(0, 0, 0);
+var UP = vec3(0, 1, 0);
+var FOVY = 60;
+var ASPECT = 1;
+var NEAR = 0.1;
+var FAR = 2000;
+
+var pos = EYE;
+var theta = vec3(0, 0, 0);
+var vTrans = vec3(0, 0, 0);
 
 // posições dos 8 vértices de um cubo de lado 1
 // centrado na origem
@@ -297,6 +301,8 @@ class Esfera {
   }
 }
 
+
+
 // ==================================================================
 // chama a main quando terminar de carregar a janela
 window.onload = main;
@@ -442,6 +448,7 @@ function callbackKeyDown(e) {
   }
   else if  (tecla == "W" || tecla == "w") {
     console.log("Tecla W - rot para cima");
+    upRotation();
   }
   else if  (tecla == "X" || tecla == "x") {
     console.log("Tecla X- rot para baixo");
@@ -458,6 +465,20 @@ function callbackKeyDown(e) {
   else if  (tecla == "C" || tecla == "c") {
     console.log("Tecla C - rot horario");
   }
+}
+
+// ==================================================================
+/**
+ * repassa os novos valores de EYE, AT e UP para a matriz vista
+ */
+function updateViewMatrix() {
+  gCtx.vista = lookAt(EYE, AT, UP);
+  gl.uniformMatrix4fv(gShader.uViewMatrix, false, flatten(gCtx.vista));
+}
+
+function upRotation() {
+  AT[EIXO_Y] += 5;
+  updateViewMatrix();
 }
 
 // ==================================================================
@@ -497,7 +518,7 @@ function crieShaders() {
   gl.uniformMatrix4fv(gShader.uPerspective, false, flatten(gCtx.perspectiva));
 
   // calcula a matriz de transformação da camera, apenas 1 vez
-  gCtx.vista = lookAt(eye, at, up);
+  gCtx.vista = lookAt(EYE, AT, UP);
 }
 
 /*
