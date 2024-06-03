@@ -21,7 +21,6 @@ const EIXO_Z = 2;
 
 //camera
 var EYE = vec3(500, 500, 500);
-//var EYE = vec3(400, 500, -500)
 var AT = vec3(0, 0, 0);
 var UP = vec3(0, 1, 0);
 
@@ -30,6 +29,7 @@ var ASPECT = 1;
 var NEAR = 0.1;
 var FAR = 2000;
 
+// constantes da camera (nave)
 var pos = EYE;
 var theta = vec3(0, 0, 0);
 var vTrans = vec3(0, 0, 0);
@@ -292,20 +292,10 @@ class Esfera {
     gaPosicoes.push(b);
     gaPosicoes.push(c);
 
-    let cor = COR_ESFERA;
-
-    if (!COR_SOLIDA) cor = sorteia_RGB();
+    let cor = sorteia_RGB();
     gaCores.push(cor);
-    if (!COR_SOLIDA) cor = sorteia_RGB();
     gaCores.push(cor);
-    if (!COR_SOLIDA) cor = sorteia_RGB();
     gaCores.push(cor);
-  }
-}
-
-class Camera extends Cubo {
-  constructor() {
-  super(pos, theta, escala, vtrans, tipo);
   }
 }
 
@@ -390,17 +380,21 @@ function main() {
   console.log("Esfera num vertices:", esfera.nv);
   console.log("Cena vertices após esfera 1:", gaPosicoes.length)
 
-  // NAVE
+  // CUBO3
   pos = vec3(100, 100, 0);
   theta = vec3(0, 0, 0);
   escala = vec3(30, 30, 30);
   vtheta = vec3(0, 1, 0);
   vtrans = vec3(0, 0, 0);
-  cubo = new Cubo(pos, theta, escala, vtheta, vtrans, CHAO);
+  cubo = new Cubo(pos, theta, escala, vtheta, vtrans, ALEATORIO);
   gaObjetos.push(cubo);
+  console.log("Cubo num vertices:", cubo.nv);
+  console.log("Cena vertices após cubo 4:", gaPosicoes.length)
 
   // interface
   crieInterface();
+
+  console.log(vTrans)
 
   // Inicializações feitas apenas 1 vez
   gl.viewport(0, 0, gCanvas.width, gCanvas.height);
@@ -453,13 +447,20 @@ function crieInterface() {
 function callbackKeyDown(e) {
   let tecla = e.key;
   if  (tecla == "J" || tecla == "j") {
-    console.log("Tecla J - vel--");
+    vTrans[0] += 1;
+    vTrans[1] += 1;
+    vTrans[2] += 1;
+    console.log("Tecla J - vel--", vTrans[EIXO_X]);
   }
   else if  (tecla == "K" || tecla == "k") {
-    console.log("Tecla K - zera vtrans");
+    vTrans = vec3(0, 0, 0);
+    console.log("Tecla K - zera vtrans", vTrans[EIXO_X], EYE);
   }
   else if  (tecla == "L" || tecla == "l") {
-    console.log("Tecla L - vel++");
+    vTrans[0] -= 1;
+    vTrans[1] -= 1;
+    vTrans[2] -= 1;
+    console.log("Tecla L - vel++", vTrans[EIXO_X]);
   }
   else if  (tecla == "W" || tecla == "w") {
     console.log("Tecla W - rot para cima");
@@ -473,81 +474,24 @@ function callbackKeyDown(e) {
   }
   else if  (tecla == "A" || tecla == "a") {
     console.log("Tecla A - rot para esq");
-    //AT[EIXO_X] -= 5;
-    mudaAngulo(-1);
+    AT[EIXO_X] -= 5;
     updateViewMatrix();
   }
   else if  (tecla == "D" || tecla == "d") {
     console.log("Tecla D - rot para dir");
-    //atualizaCameraCircular()
-    //EYE[EIXO_Z] -= 5;
-    mudaAngulo(1);
-    //AT[EIXO_X] += 5;
+    AT[EIXO_X] += 5;
     updateViewMatrix();
   }
   else if  (tecla == "Z" || tecla == "z") {
     console.log("Tecla Z - rot anti horario");
-    //AT[EIXO_X] += 5
+    UP[EIXO_Z] += 0.1
     updateViewMatrix()
   }
   else if  (tecla == "C" || tecla == "c") {
     console.log("Tecla C - rot horario");
+    UP[EIXO_Z] -= 0.1
+    updateViewMatrix()
   }
-}
-
-// Function to convert degrees to radians
-function degreesToRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
-
-// Function to convert radians to degrees
-function radiansToDegrees(radians) {
-  return radians * (180 / Math.PI);
-}
-
-// rotacao no eixo x
-// y = Math.cos(angle) * y - Math.sin(angle) * z;
-// z = Math.sin(angle) * y + Math.cos(angle) * z;
-
-// rotacao no eixo z
-// x = Math.cos(angle) * x - Math.sin(angle) * y;
-// y = Math.sin(angle) * x + Math.cos(angle) * y;
-
-// rotacao no eixo y
-// x = Math.cos(angle) * x + Math.sin(angle) * z;
-// z = -Math.sin(angle) * x + Math.cos(angle) * z;
-
-var angle = 0;
-
-function mudaAngulo(delta) {
-  angle += delta
-  console.log(angle)
-  let rad = degreesToRadians(angle);
-
-  let x = EYE[EIXO_X];
-  //let y = EYE[EIXO_Y]
-  let z = EYE[EIXO_Z];
-
-
-  // rotacao no eixo x
-  //y = Math.cos(angle) * y - Math.sin(angle) * z;
-  //z = Math.sin(angle) * y + Math.cos(angle) * z;
-
-  // rotacao no eixo z
-  // x = Math.cos(angle) * x - Math.sin(angle) * y;
-  // y = Math.sin(angle) * x + Math.cos(angle) * y;
-
-  // rotacao no eixo y
-  x = Math.cos(rad) * x + Math.sin(rad) * z;
-  z = -Math.sin(rad) * x + Math.cos(rad) * z;
-
-  angle = radiansToDegrees(rad)
-
-  EYE[EIXO_X] = x;
-  //EYE[EIXO_Y] = y;
-  EYE[EIXO_Z] = z;
-
-  console.log(EYE); 
 }
 
 // ==================================================================
@@ -610,6 +554,7 @@ function passo() {
   atualizaChao();
   atualizaCubo1();
   atualizaCubo2();
+  atualizaCubo3()
 
   // atualiza esferas
   atualizaEsfera1(); 
@@ -622,6 +567,7 @@ function passo() {
   desenhaCubo2();
   desenhaEsfera1();
   desenhaEsfera2();
+  desenhaCubo3();
 }
 
 // ==================================================================
@@ -638,8 +584,15 @@ function render() {
   desenhaCubo2();
   desenhaEsfera1();
   desenhaEsfera2();
-  //desenhaNave();
-  //atualizaCameraCircular()
+  desenhaCubo3();
+
+  if (!gCtx.pause) {
+    // atualiza velocidade de translacao da camera
+    EYE[EIXO_X] = EYE[EIXO_X] + vTrans[EIXO_X];
+    EYE[EIXO_Y] = EYE[EIXO_Y] + vTrans[EIXO_Y];
+    EYE[EIXO_Z] = EYE[EIXO_Z] + vTrans[EIXO_Z];
+    updateViewMatrix();
+  }
 
   window.requestAnimationFrame(render);
 }
@@ -719,29 +672,6 @@ function atualizaCubo1() {
   if (gaObjetos[2].pos[EIXO_Z] <= 0) {
     gaObjetos[2].vtrans[EIXO_Z] = -gaObjetos[2].vtrans[EIXO_Z];
   }
-}
-
-function atualizaNave() {
-  // Define the center of the circular path and the radius
-  const centerX = 0; // X coordinate of the center
-  const centerZ = 0; // Z coordinate of the center
-  const radius = 300; // Radius of the circular path
-
-  // Update the rotation of cubo 1
-  gaObjetos[6].theta[EIXO_Y] += gaObjetos[6].vtheta[EIXO_Y];
-
-  // Update the angle for circular movement
-  if (!gaObjetos[6].angle) {
-    gaObjetos[6].angle = 0;
-  }
-  gaObjetos[6].angle += 0.01; // Change this value to adjust the speed of the circular motion
-
-  //gCtx.vista = lookAt(gaObjetos[6].pos, AT, UP);
-  //gl.uniformMatrix4fv(gShader.uViewMatrix, false, flatten(gCtx.vista));
-
-  // Update the position of cubo 1 in a circular path around the Y-axis
-  gaObjetos[6].pos[EIXO_X] = centerX + radius * Math.cos(gaObjetos[6].angle);
-  gaObjetos[6].pos[EIXO_Z] = centerZ + radius * Math.sin(gaObjetos[6].angle);
 }
 
 // ==================================================================
@@ -879,14 +809,41 @@ function desenhaEsfera2() {
   gl.drawArrays(gl.TRIANGLES, 528, gaObjetos[5].nv);
 }
 
-function desenhaNave() {
-  // modelo muda a cada frame da animação
-  if (!gCtx.pause) atualizaNave();
+// ==================================================================
+/**
+ * Atualiza o estado do CUBO3
+ */
+function atualizaCubo3() {
+  // centro (0, 0, 0) e raio (distancia em que o cubo esta do eixo Y)
+  const centerX = 0;
+  const centerZ = 0;
+  const radius = 100;
 
-  // rotacao em todos os eixos
-  //let rx = rotateX(gaObjetos[6].theta[EIXO_X]);
+  // rotacao
+  gaObjetos[6].theta[EIXO_Y] += gaObjetos[6].vtheta[EIXO_Y];
+
+  // cria angulo para CUBO3
+  if (!gaObjetos[6].angle) {
+    gaObjetos[6].angle = 0;
+  }
+
+  gaObjetos[6].angle += 0.01; 
+
+  // calcula nova posicao do cubo dado seu angulo atual
+  gaObjetos[6].pos[EIXO_X] = centerX + radius * Math.cos(gaObjetos[6].angle);
+  gaObjetos[6].pos[EIXO_Z] = centerZ + radius * Math.sin(gaObjetos[6].angle);
+}
+
+// ==================================================================
+/**
+ * Desenha o estado atual de CUBO3
+ */
+function desenhaCubo3() {
+  // modelo muda a cada frame da animação
+  if (!gCtx.pause) atualizaCubo3();
+
+  // rotacao
   let ry = rotateY(gaObjetos[6].theta[EIXO_Y]);
-  //let rz = rotateZ(gaObjetos[6].theta[EIXO_Z]);
 
   // escala
   let s = scale(gaObjetos[6].escala[0], gaObjetos[6].escala[1], gaObjetos[6].escala[2]);
@@ -899,21 +856,6 @@ function desenhaNave() {
 
   gl.uniformMatrix4fv(gShader.uModelView, false, flatten(mult(gCtx.vista, model)));
   gl.drawArrays(gl.TRIANGLES, 912, gaObjetos[6].nv);
-}
-
-function atualizaCameraCircular() {
-  let radius = length(subtract(EYE, AT)); // Radius of the circular path (distance from the look-at point)
-
-  // Increment the angle for circular movement
-  angle += 0.01; // Change this value to adjust the speed of the circular motion
-
-  // Update the camera position in a circular path around the Y-axis
-  EYE[EIXO_X] = radius * Math.cos(angle);
-  EYE[EIXO_Y] = radius * Math.sin(angle);
-
-  // Update the view matrix
-  gCtx.vista = lookAt(EYE, AT, UP);
-  gl.uniformMatrix4fv(gShader.uViewMatrix, false, flatten(gCtx.vista));
 }
 
 // ========================================================

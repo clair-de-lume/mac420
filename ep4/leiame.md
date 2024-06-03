@@ -33,6 +33,7 @@ Esse EP não possui dependências. A única coisa que você precisa é de um nav
 - CUBO2: está na posição (0, 0, 0) e tem escala (10, 500, 10). Não possui velocidade de translação, mas possui velocidade de rotação (0, 1, 0).
 - ESFERA1: está na posição (-200, 200, 0) e tem escala (100, 30, 30). Possui velocidade de translação (0, -1, 0), i.e., se move em uma linha reta seguindo o eixo Y, a partir de sua posição inicial até uma posição pré-definida (-200, -50, 0). Quando atinge essa posição máxima, os sinais das velocidades são invertidos e ESFERA1 anda em linha reta até sua posição inicial. Possui também velocidade de rotação (1, 0, 0), ou seja, roda apenas em torno do eixo X.
 - ESFERA2: está na posição (150, 30, 140) e tem escala (100, 100, 100). Não possui velocidade de translação, mas possui velocidade de rotação (0.2, 0.2, 0.2), i.e, rotaciona em torno de todos os eixos.
+- CUBO3: esrá na posição (100, 100, 0) e tem escala (30, 30, 30). Faz uma trajetória circular em torno do eixo Y.
 
 ## Bugs conhecidos
 Nenhum bug conhecido até agora.
